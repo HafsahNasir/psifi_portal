@@ -63,6 +63,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://50ca-154-80-39-134.ngrok-free.app',
     'https://79bc-39-46-250-83.ngrok-free.app',
     'https://7cc5-154-80-45-118.ngrok-free.app',
+    'https://42f9-39-46-216-189.ngrok-free.app',
 ]
 TEMPLATES = [
     {

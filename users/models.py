@@ -23,7 +23,7 @@ class SymposiumRegistration(models.Model):
         ('Failed', 'Failed'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, related_name='registrations', on_delete=models.CASCADE, null=True, blank=True)
     email = models.EmailField()
 
     registration_type = models.CharField(max_length=32, blank=True, null=True)
@@ -52,6 +52,7 @@ class SymposiumRegistration(models.Model):
         self.event1_fee = (self.event_fee_per_delegate or 0) * (self.team_size or 0)
         self.save(update_fields=['event1_fee'])
     print(event1_fee)
+    
 
 
     # Chaperone info
@@ -83,6 +84,8 @@ class SymposiumRegistration(models.Model):
         for d in self.delegates.all():
             if str(d.accommodation).lower() == "yes":
                 nights = d.number_of_nights or 1
+                print("number of nights are")
+                print(nights)
                 total += 1500 * nights
         # If you want to add chaperone too, add logic here
         return total
@@ -113,7 +116,7 @@ class SymposiumRegistration(models.Model):
 
         # --- CA Discount (delegation fee = 0 for all CA teams if threshold reached) ---
         if ca_discount:
-            delegation_fee = 1
+            delegation_fee = 0
             
             # Update all CA teams to have delegation_fee 0
             SymposiumRegistration.objects.filter(ca_code=self.ca_code).update(delegation_fee=0)

@@ -46,14 +46,14 @@
   <body>
     <a href="/dashboard/" class="dashboard-btn">Dashboard</a>
     <iframe
-      data-tally-src="https://tally.so/r/npNbjV"
-      allow="fullscreen"
-      width="100%"
-      height="100%"
-      frameborder="0"
-      marginheight="0"
-      marginwidth="0"
-      title="LUMS Science Symposium 2025">
-    </iframe>
+    data-tally-src="https://tally.so/r/npNbjV?head_email={{ request.user.email|urlencode }}"
+    allow="fullscreen"
+    width="100%"
+    height="100%"
+    frameborder="0"
+    marginheight="0"
+    marginwidth="0"
+    title="LUMS Science Symposium 2025">
+ </iframe>
   </body>
 </html>

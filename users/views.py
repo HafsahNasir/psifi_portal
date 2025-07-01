@@ -5,6 +5,7 @@ from .forms import CustomSignupForm
 from django.contrib.auth.decorators import login_required
 from django import forms
 from .models import CampusAmbassador, calculate_nights
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 
 
@@ -49,14 +50,34 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 from users.models import SymposiumRegistration
+from django.db.models import Q
+
+from django.db.models import Q
+
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from users.models import SymposiumRegistration, SymposiumDelegate
 
 def dashboard_view(request):
-    reg = SymposiumRegistration.objects.filter(email=request.user.email).first()
+    user_email = request.user.email
+
+    # Check if this user is the head delegate of any registration
+    reg = SymposiumRegistration.objects.filter(email__iexact=user_email).first()
+
     has_registration = reg is not None
+
+    # Debugging info
+    print("Current user email:", repr(user_email))
+    print("All registration emails:", list(SymposiumRegistration.objects.values_list("email", flat=True)))
+    print("Registration object:", reg)
+
     return render(request, "dashboard.html", {
         "has_registration": has_registration,
         "reg": reg,
     })
+
+
+
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -144,7 +165,7 @@ def tally_webhook(request):
             return None
 
         # Registration fields
-        email=request.user.email
+        email = extract("question_lOV1Go_263842fb-8df7-4d40-8586-8d9347c1fe53")
         registration_type = extract_choice_label("question_LKYyZl")
         institution_name = extract("question_poW9b8")
         team_city = extract("question_14v5A1")
@@ -165,8 +186,11 @@ def tally_webhook(request):
         # Prevent duplicate registration
         if SymposiumRegistration.objects.filter(email=email, team_name=team_name).exists():
             return JsonResponse({"detail": "Already registered"}, status=409)
+        User = get_user_model()
+       
 
         reg = SymposiumRegistration.objects.create(
+  
             email=email,
             registration_type=registration_type,
             institution_name=institution_name,
@@ -253,6 +277,7 @@ def tally_webhook(request):
             },
         ]
 
+        # --- Save all 5 delegates, null fields if missing ---
         for i in range(5):
             dkeys = delegate_keys[i]
             delegate_data = {
@@ -261,11 +286,11 @@ def tally_webhook(request):
             }
             arrival_val = extract(dkeys.get("date_of_arrival"))
             departure_val = extract(dkeys.get("date_of_departure"))
+    
             number_of_nights = calculate_nights(arrival_val, departure_val)
             delegate_data["date_of_arrival"] = arrival_val
             delegate_data["date_of_departure"] = departure_val
-            delegate_data["number_of_nights"] = number_of_nights
-
+            delegate_data["number_of_nights"] = number_of_nights  # <-- ADD THIS
             for field, qkey in dkeys.items():
                 if field in ["date_of_arrival", "date_of_departure", "number_of_nights"]:
                     continue
@@ -276,12 +301,10 @@ def tally_webhook(request):
                     delegate_data[field] = extract_choice_label(qkey)
                 else:
                     delegate_data[field] = val
-
-            # --- Only save delegate if CNIC is present and not empty ---
             cnic_val = delegate_data.get("cnic", "")
+            # Only create if CNIC is present and non-empty
             if cnic_val and str(cnic_val).strip():
                 SymposiumDelegate.objects.create(**delegate_data)
-
         # --- Chaperone fields ---
         reg.chaperone_name = extract("question_er2X4o")
         reg.chaperone_cnic = extract("question_WRY7yQ")
@@ -300,7 +323,8 @@ def tally_webhook(request):
 
         # --- Compute fees and save ---
         reg.calculate_accommodation_fee()
-        reg.calculate_total_fee()
+        
+        reg.update_fees()
         reg.save()
 
         print("Received Tally webhook and saved registration & delegates.")
