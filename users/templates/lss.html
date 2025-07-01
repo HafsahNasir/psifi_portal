@@ -1,0 +1,1653 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Event Schedule - PSIFI{% endblock %}
+
+{% block content %}
+<style>
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.schedule-page {
+  min-height: 100vh;
+  background: #000000;
+  color: #ffffff;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Black Background with Brand Color Accents */
+.schedule-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+  z-index: 1;
+}
+
+.schedule-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(173, 96, 224, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(96, 26, 92, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.8;
+}
+
+/* Subtle Grid Overlay */
+.grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(173, 96, 224, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(173, 96, 224, 0.03) 1px, transparent 1px);
+  background-size: 100px 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Main Content */
+.schedule-content {
+  position: relative;
+  z-index: 10;
+  padding: 1rem 0;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(173, 96, 224, 0.2);
+}
+
+.back-button {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(173, 96, 224, 0.1);
+  border: 1px solid rgba(173, 96, 224, 0.3);
+  border-radius: 10px;
+  color: #ad60e0;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  min-height: 44px;
+}
+
+.back-button:hover {
+  background: rgba(173, 96, 224, 0.2);
+  border-color: #ad60e0;
+  color: #ad60e0;
+  text-decoration: none;
+  transform: translateX(-3px);
+}
+
+.back-button i {
+  font-size: 1rem;
+}
+
+.page-header {
+  text-align: center;
+}
+
+.page-title {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff, #ad60e0);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  color: rgba(173, 96, 224, 0.8);
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.event-dates {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Day Navigation */
+.day-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
+
+.day-tab {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 0.9rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(173, 96, 224, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.day-tab:hover::before,
+.day-tab.active::before {
+  left: 100%;
+}
+
+.day-tab:hover,
+.day-tab.active {
+  background: linear-gradient(135deg, #ad60e0, #601a5c);
+  border-color: #ad60e0;
+  color: white;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(173, 96, 224, 0.3);
+}
+
+/* Schedule Container */
+.schedule-container {
+  display: none;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.schedule-container.active {
+  display: block;
+}
+
+/* Day Header */
+.day-header {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ad60e0, transparent);
+}
+
+.day-title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.day-date {
+  font-size: clamp(1rem, 3vw, 1.1rem);
+  color: rgba(173, 96, 224, 0.8);
+  font-weight: 400;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #ad60e0, #601a5c);
+  border-radius: 1px;
+}
+
+/* Timeline Item */
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-left: 1rem;
+  transition: all 0.3s ease;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 1.5rem;
+  width: 12px;
+  height: 12px;
+  background: #ad60e0;
+  border-radius: 50%;
+  border: 3px solid #000000;
+  box-shadow: 0 0 0 2px #ad60e0;
+}
+
+.timeline-item:hover {
+  background: rgba(173, 96, 224, 0.08);
+  border-color: rgba(173, 96, 224, 0.3);
+  transform: translateX(5px);
+  box-shadow: 0 8px 25px rgba(173, 96, 224, 0.2);
+}
+
+/* Special Event Types */
+.timeline-item.keynote::before {
+  background: #f59e0b;
+  box-shadow: 0 0 0 2px #f59e0b;
+}
+
+.timeline-item.workshop::before {
+  background: #22c55e;
+  box-shadow: 0 0 0 2px #22c55e;
+}
+
+.timeline-item.break::before {
+  background: #6b7280;
+  box-shadow: 0 0 0 2px #6b7280;
+}
+
+.timeline-item.competition::before {
+  background: #ef4444;
+  box-shadow: 0 0 0 2px #ef4444;
+}
+
+/* Event Content */
+.event-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #ad60e0;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-time i {
+  font-size: 0.8rem;
+}
+
+.event-title {
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.event-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.event-location,
+.event-speaker,
+.event-type {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.event-location i,
+.event-speaker i,
+.event-type i {
+  color: #ad60e0;
+  font-size: 0.75rem;
+}
+
+/* Event Type Badges */
+.event-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: auto;
+}
+
+.badge-keynote {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-workshop {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-break {
+  background: rgba(107, 114, 128, 0.2);
+  color: #9ca3af;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+.badge-competition {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badge-session {
+  background: rgba(173, 96, 224, 0.2);
+  color: #ad60e0;
+  border: 1px solid rgba(173, 96, 224, 0.3);
+}
+
+/* Floating Accent Elements */
+.floating-accent {
+  position: fixed;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.4;
+}
+
+.accent-1 {
+  top: 20%;
+  right: 5%;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, rgba(173, 96, 224, 0.06), transparent);
+  border-radius: 50%;
+  animation: float-1 8s ease-in-out infinite;
+}
+
+.accent-2 {
+  bottom: 30%;
+  left: 5%;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(96, 26, 92, 0.04), transparent);
+  border-radius: 50%;
+  animation: float-2 10s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-15px) rotate(120deg); }
+  66% { transform: translateY(8px) rotate(240deg); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(180deg); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* TABLET AND DESKTOP RESPONSIVE */
+@media (min-width: 768px) {
+  .schedule-content {
+    padding: 2rem 0;
+  }
+
+  .container {
+    padding: 0 2rem;
+  }
+
+  .header-section {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+  }
+
+  .page-header {
+    text-align: left;
+    flex: 1;
+  }
+
+  .back-button {
+    align-self: auto;
+  }
+
+  .page-title {
+    font-size: 3rem;
+  }
+
+  .page-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .timeline {
+    padding-left: 3rem;
+  }
+
+  .timeline::before {
+    left: 1.5rem;
+  }
+
+  .timeline-item {
+    margin-left: 1.5rem;
+    padding: 2rem;
+  }
+
+  .timeline-item::before {
+    left: -3rem;
+    top: 2rem;
+    width: 16px;
+    height: 16px;
+  }
+
+  .event-meta {
+    flex-wrap: nowrap;
+  }
+
+  .floating-accent {
+    opacity: 0.6;
+  }
+
+  .accent-1 {
+    width: 120px;
+    height: 120px;
+    top: 15%;
+    right: 10%;
+  }
+
+  .accent-2 {
+    width: 100px;
+    height: 100px;
+    bottom: 25%;
+    left: 15%;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1200px) {
+  .timeline-item {
+    padding: 2.5rem;
+  }
+}
+
+/* Small Mobile Adjustments */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  .header-section {
+    padding: 1rem 0;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  .day-navigation {
+    gap: 0.5rem;
+  }
+
+  .day-tab {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .timeline {
+    padding-left: 1.5rem;
+  }
+
+  .timeline::before {
+    left: 0.75rem;
+  }
+
+  .timeline-item {
+    margin-left: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .timeline-item::before {
+    left: -1.5rem;
+    top: 1.25rem;
+    width: 10px;
+    height: 10px;
+  }
+
+  .event-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .event-badge {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+}
+
+/* Mobile Landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+  .schedule-content {
+    padding: 1rem 0;
+  }
+
+  .header-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .floating-accent {
+    display: none;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .timeline-item:hover {
+    transform: none;
+  }
+
+  .timeline-item:active {
+    transform: scale(0.98);
+  }
+
+  .day-tab:hover {
+    transform: none;
+  }
+
+  .day-tab:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .floating-accent,
+  .fade-in {
+    animation: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ad60e0, #601a5c);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #c084ea, #7a2470);
+}
+
+/* Selection Colors */
+::selection {
+  background: rgba(173, 96, 224, 0.3);
+  color: white;
+}
+
+::-moz-selection {
+  background: rgba(173, 96, 224, 0.3);
+  color: white;
+}
+</style>
+
+<div class="schedule-page">
+  <!-- Background -->
+  <div class="schedule-bg"></div>
+  <div class="grid-overlay"></div>
+  
+  <!-- Floating Brand Elements -->
+  <div class="floating-accent accent-1"></div>
+  <div class="floating-accent accent-2"></div>
+
+  <!-- Main Content -->
+  <div class="schedule-content">
+    <div class="container">
+      <!-- Header Section -->
+      <div class="header-section fade-in">
+        <div class="page-header">
+          <a href="{% url 'dashboard' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Dashboard</span>
+          </a>
+          <h1 class="page-title">Event Schedule</h1>
+          <p class="page-subtitle">PSIFI 2024 - Complete Program Schedule</p>
+          <div class="event-dates">March 15-18, 2024 • LUMS Campus</div>
+        </div>
+      </div>
+
+      <!-- Day Navigation -->
+      <div class="day-navigation fade-in">
+        <button class="day-tab active" data-day="day1">
+          <i class="fas fa-calendar-day"></i>
+          Day 1 - March 15
+        </button>
+        <button class="day-tab" data-day="day2">
+          <i class="fas fa-calendar-day"></i>
+          Day 2 - March 16
+        </button>
+        <button class="day-tab" data-day="day3">
+          <i class="fas fa-calendar-day"></i>
+          Day 3 - March 17
+        </button>
+        <button class="day-tab" data-day="day4">
+          <i class="fas fa-calendar-day"></i>
+          Day 4 - March 18
+        </button>
+      </div>
+
+      <!-- Day 1 Schedule -->
+      <div class="schedule-container active fade-in" id="day1">
+        <div class="day-header">
+          <h2 class="day-title">Day 1 - Opening & Keynotes</h2>
+          <p class="day-date">Friday, March 15, 2024</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              8:00 AM - 9:00 AM
+            </div>
+            <h3 class="event-title">Registration & Welcome Coffee</h3>
+            <p class="event-description">
+              Participants check-in, receive welcome packages, and network over coffee and light refreshments.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Lobby
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Registration
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item keynote">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              9:00 AM - 10:30 AM
+            </div>
+            <h3 class="event-title">Opening Ceremony & Keynote Address</h3>
+            <p class="event-description">
+              Welcome address by the Vice Chancellor followed by an inspiring keynote on "The Future of Scientific Innovation in Pakistan".
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Auditorium
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-user"></i>
+                Dr. Sarah Ahmed
+              </div>
+              <div class="event-badge badge-keynote">
+                <i class="fas fa-microphone"></i>
+                Keynote
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              10:30 AM - 11:00 AM
+            </div>
+            <h3 class="event-title">Coffee Break & Networking</h3>
+            <p class="event-description">
+              Refreshment break with networking opportunities for participants and speakers.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Courtyard
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Break
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item workshop">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              11:00 AM - 12:30 PM
+            </div>
+            <h3 class="event-title">Research Methodology Workshop</h3>
+            <p class="event-description">
+              Interactive workshop covering advanced research methodologies, data analysis techniques, and best practices in scientific research.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Workshop Hall A
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-user"></i>
+                Prof. Michael Chen
+              </div>
+              <div class="event-badge badge-workshop">
+                <i class="fas fa-tools"></i>
+                Workshop
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              12:30 PM - 1:30 PM
+            </div>
+            <h3 class="event-title">Lunch Break</h3>
+            <p class="event-description">
+              Lunch served in the dining hall with continued networking opportunities.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Dining Hall
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-utensils"></i>
+                Lunch
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item competition">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              1:30 PM - 4:00 PM
+            </div>
+            <h3 class="event-title">Science Fair - Round 1</h3>
+            <p class="event-description">
+              First round of science fair presentations where teams showcase their innovative projects to judges and peers.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Exhibition Hall
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                All Teams
+              </div>
+              <div class="event-badge badge-competition">
+                <i class="fas fa-trophy"></i>
+                Competition
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              4:00 PM - 4:30 PM
+            </div>
+            <h3 class="event-title">Afternoon Tea Break</h3>
+            <p class="event-description">
+              Light refreshments and informal discussions about the day's presentations.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Courtyard
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Break
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              4:30 PM - 6:00 PM
+            </div>
+            <h3 class="event-title">Panel Discussion: Innovation in STEM</h3>
+            <p class="event-description">
+              Expert panel discussing current trends, challenges, and opportunities in STEM fields with Q&A session.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Auditorium
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                Expert Panel
+              </div>
+              <div class="event-badge badge-session">
+                <i class="fas fa-comments"></i>
+                Panel
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              7:00 PM - 9:00 PM
+            </div>
+            <h3 class="event-title">Welcome Dinner & Cultural Night</h3>
+            <p class="event-description">
+              Welcome dinner followed by cultural performances and entertainment to celebrate the opening of PSIFI 2024.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Grand Ballroom
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-music"></i>
+                Social
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 2 Schedule -->
+      <div class="schedule-container fade-in" id="day2">
+        <div class="day-header">
+          <h2 class="day-title">Day 2 - Workshops & Competitions</h2>
+          <p class="day-date">Saturday, March 16, 2024</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              8:00 AM - 9:00 AM
+            </div>
+            <h3 class="event-title">Breakfast & Morning Briefing</h3>
+            <p class="event-description">
+              Continental breakfast followed by day's agenda briefing and announcements.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Dining Hall
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Breakfast
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item keynote">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              9:00 AM - 10:00 AM
+            </div>
+            <h3 class="event-title">Keynote: AI and Machine Learning</h3>
+            <p class="event-description">
+              Exploring the latest developments in artificial intelligence and machine learning applications in scientific research.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Auditorium
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-user"></i>
+                Dr. Aisha Khan
+              </div>
+              <div class="event-badge badge-keynote">
+                <i class="fas fa-microphone"></i>
+                Keynote
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item workshop">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              10:15 AM - 12:00 PM
+            </div>
+            <h3 class="event-title">Parallel Workshops Session 1</h3>
+            <p class="event-description">
+              Choose from: Data Science Fundamentals, Biotechnology Lab Techniques, or Sustainable Energy Solutions.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Workshop Halls A, B, C
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                Various Instructors
+              </div>
+              <div class="event-badge badge-workshop">
+                <i class="fas fa-tools"></i>
+                Workshop
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              12:00 PM - 1:00 PM
+            </div>
+            <h3 class="event-title">Lunch Break</h3>
+            <p class="event-description">
+              Lunch with networking opportunities and informal discussions.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Dining Hall
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-utensils"></i>
+                Lunch
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item competition">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              1:00 PM - 4:00 PM
+            </div>
+            <h3 class="event-title">Innovation Challenge - Phase 1</h3>
+            <p class="event-description">
+              Teams work on solving real-world problems using scientific principles and innovative thinking.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Innovation Labs
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                Competing Teams
+              </div>
+              <div class="event-badge badge-competition">
+                <i class="fas fa-trophy"></i>
+                Competition
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              4:00 PM - 4:30 PM
+            </div>
+            <h3 class="event-title">Afternoon Break</h3>
+            <p class="event-description">
+              Refreshments and relaxation time.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Courtyard
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Break
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item workshop">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              4:30 PM - 6:00 PM
+            </div>
+            <h3 class="event-title">Parallel Workshops Session 2</h3>
+            <p class="event-description">
+              Advanced sessions: Quantum Computing Basics, Environmental Science Methods, or Medical Technology Innovations.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Workshop Halls A, B, C
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                Expert Facilitators
+              </div>
+              <div class="event-badge badge-workshop">
+                <i class="fas fa-tools"></i>
+                Workshop
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              7:00 PM - 9:00 PM
+            </div>
+            <h3 class="event-title">Poster Session & Networking Dinner</h3>
+            <p class="event-description">
+              Poster presentations by participants followed by networking dinner and informal discussions.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Exhibition Hall
+              </div>
+              <div class="event-badge badge-session">
+                <i class="fas fa-presentation"></i>
+                Poster Session
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 3 Schedule -->
+      <div class="schedule-container fade-in" id="day3">
+        <div class="day-header">
+          <h2 class="day-title">Day 3 - Competitions & Presentations</h2>
+          <p class="day-date">Sunday, March 17, 2024</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              8:00 AM - 9:00 AM
+            </div>
+            <h3 class="event-title">Breakfast & Team Preparation</h3>
+            <p class="event-description">
+              Breakfast followed by team preparation time for final presentations and competitions.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Dining Hall
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Breakfast
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item competition">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              9:00 AM - 12:00 PM
+            </div>
+            <h3 class="event-title">Science Fair - Final Round</h3>
+            <p class="event-description">
+              Final presentations of science fair projects with judging by expert panel and peer evaluation.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Exhibition Hall
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                Finalist Teams
+              </div>
+              <div class="event-badge badge-competition">
+                <i class="fas fa-trophy"></i>
+                Competition
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              12:00 PM - 1:00 PM
+            </div>
+            <h3 class="event-title">Lunch Break</h3>
+            <p class="event-description">
+              Lunch break with time for relaxation and informal networking.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Dining Hall
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-utensils"></i>
+                Lunch
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item competition">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              1:00 PM - 3:30 PM
+            </div>
+            <h3 class="event-title">Innovation Challenge - Final Presentations</h3>
+            <p class="event-description">
+              Teams present their innovative solutions to real-world problems with live demonstrations and Q&A.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Auditorium
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                Challenge Teams
+              </div>
+              <div class="event-badge badge-competition">
+                <i class="fas fa-trophy"></i>
+                Competition
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              3:30 PM - 4:00 PM
+            </div>
+            <h3 class="event-title">Afternoon Break</h3>
+            <p class="event-description">
+              Short break before the final sessions of the day.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Courtyard
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Break
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              4:00 PM - 5:30 PM
+            </div>
+            <h3 class="event-title">Research Paper Presentations</h3>
+            <p class="event-description">
+              Selected participants present their research papers in concurrent sessions across different scientific disciplines.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Conference Rooms A, B, C
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                Research Presenters
+              </div>
+              <div class="event-badge badge-session">
+                <i class="fas fa-presentation"></i>
+                Research
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item keynote">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              5:45 PM - 6:45 PM
+            </div>
+            <h3 class="event-title">Keynote: Future of Scientific Collaboration</h3>
+            <p class="event-description">
+              Inspiring talk on the importance of collaboration in scientific advancement and building research networks.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Auditorium
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-user"></i>
+                Dr. Fatima Ali
+              </div>
+              <div class="event-badge badge-keynote">
+                <i class="fas fa-microphone"></i>
+                Keynote
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              7:30 PM - 10:00 PM
+            </div>
+            <h3 class="event-title">Gala Dinner & Awards Preview</h3>
+            <p class="event-description">
+              Formal gala dinner with entertainment and preview of tomorrow's award ceremony winners.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Grand Ballroom
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-award"></i>
+                Gala
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 4 Schedule -->
+      <div class="schedule-container fade-in" id="day4">
+        <div class="day-header">
+          <h2 class="day-title">Day 4 - Awards & Closing</h2>
+          <p class="day-date">Monday, March 18, 2024</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              8:00 AM - 9:00 AM
+            </div>
+            <h3 class="event-title">Final Breakfast & Checkout</h3>
+            <p class="event-description">
+              Last breakfast together with accommodation checkout for departing participants.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Dining Hall
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Breakfast
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              9:00 AM - 10:30 AM
+            </div>
+            <h3 class="event-title">Feedback Session & Evaluation</h3>
+            <p class="event-description">
+              Comprehensive feedback session about the event experience and suggestions for future improvements.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Conference Room A
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-users"></i>
+                All Participants
+              </div>
+              <div class="event-badge badge-session">
+                <i class="fas fa-comments"></i>
+                Feedback
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              10:30 AM - 11:00 AM
+            </div>
+            <h3 class="event-title">Final Preparation Break</h3>
+            <p class="event-description">
+              Short break before the closing ceremony preparations.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Courtyard
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-coffee"></i>
+                Break
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item keynote">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              11:00 AM - 12:30 PM
+            </div>
+            <h3 class="event-title">Awards Ceremony</h3>
+            <p class="event-description">
+              Recognition and awards presentation for outstanding performances in all competition categories and special achievements.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Auditorium
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-user"></i>
+                Chief Guest
+              </div>
+              <div class="event-badge badge-keynote">
+                <i class="fas fa-trophy"></i>
+                Awards
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              12:30 PM - 1:30 PM
+            </div>
+            <h3 class="event-title">Closing Ceremony</h3>
+            <p class="event-description">
+              Official closing remarks, thank you messages, and announcement of next year's PSIFI event details.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Auditorium
+              </div>
+              <div class="event-speaker">
+                <i class="fas fa-user"></i>
+                Organizing Committee
+              </div>
+              <div class="event-badge badge-session">
+                <i class="fas fa-flag-checkered"></i>
+                Closing
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item break">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              1:30 PM - 2:30 PM
+            </div>
+            <h3 class="event-title">Farewell Lunch</h3>
+            <p class="event-description">
+              Final meal together with continued networking and exchange of contact information.
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Dining Hall
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-utensils"></i>
+                Farewell
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="event-time">
+              <i class="fas fa-clock"></i>
+              2:30 PM - 4:00 PM
+            </div>
+            <h3 class="event-title">Departure & Transportation</h3>
+            <p class="event-description">
+              Organized transportation to airports and train stations for departing participants. Safe travels!
+            </p>
+            <div class="event-meta">
+              <div class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                Main Entrance
+              </div>
+              <div class="event-badge badge-break">
+                <i class="fas fa-bus"></i>
+                Departure
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Staggered fade-in animation
+  const fadeElements = document.querySelectorAll('.fade-in');
+  fadeElements.forEach((element, index) => {
+    element.style.animationDelay = `${index * 0.1}s`;
+  });
+
+  // Day tab functionality
+  const dayTabs = document.querySelectorAll('.day-tab');
+  const scheduleContainers = document.querySelectorAll('.schedule-container');
+
+  dayTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      // Remove active class from all tabs and containers
+      dayTabs.forEach(t => t.classList.remove('active'));
+      scheduleContainers.forEach(c => {
+        c.classList.remove('active');
+        c.style.display = 'none';
+      });
+
+      // Add active class to clicked tab
+      this.classList.add('active');
+
+      // Show corresponding schedule container
+      const targetDay = this.getAttribute('data-day');
+      const targetContainer = document.getElementById(targetDay);
+      if (targetContainer) {
+        targetContainer.style.display = 'block';
+        setTimeout(() => {
+          targetContainer.classList.add('active');
+        }, 50);
+      }
+
+      // Scroll to top of schedule
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  // Timeline item interactions
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  timelineItems.forEach(item => {
+    item.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateX(8px) scale(1.02)';
+    });
+    
+    item.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateX(0) scale(1)';
+    });
+
+    // Click to expand/collapse (could be used for more details)
+    item.addEventListener('click', function() {
+      // Add click feedback
+      this.style.transform = 'translateX(5px) scale(0.98)';
+      setTimeout(() => {
+        this.style.transform = 'translateX(8px) scale(1.02)';
+      }, 150);
+    });
+  });
+
+  // Touch interactions for mobile
+  if ('ontouchstart' in window) {
+    timelineItems.forEach(item => {
+      item.addEventListener('touchstart', function() {
+        this.style.transform = 'translateX(5px) scale(0.98)';
+      });
+      
+      item.addEventListener('touchend', function() {
+        this.style.transform = 'translateX(0) scale(1)';
+      });
+    });
+
+    dayTabs.forEach(tab => {
+      tab.addEventListener('touchstart', function() {
+        this.style.transform = 'scale(0.95)';
+      });
+      
+      tab.addEventListener('touchend', function() {
+        this.style.transform = 'scale(1)';
+      });
+    });
+  }
+
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  // Observe timeline items for scroll animations
+  timelineItems.forEach((item, index) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(30px)';
+    item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+    observer.observe(item);
+  });
+
+  // Viewport height adjustment for mobile
+  function setViewportHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
+  setViewportHeight();
+  window.addEventListener('resize', setViewportHeight);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(setViewportHeight, 100);
+  });
+
+  // Smooth scrolling for internal links
+  document.documentElement.style.scrollBehavior = 'smooth';
+
+  // Add current time indicator (optional feature)
+  function addCurrentTimeIndicator() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTime = currentHour * 60 + currentMinute; // Convert to minutes
+
+    // This would require actual event dates to be meaningful
+    // For demo purposes, we'll just add a visual indicator
+    console.log(`Current time: ${currentHour}:${currentMinute.toString().padStart(2, '0')}`);
+  }
+
+  addCurrentTimeIndicator();
+});
+</script>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}

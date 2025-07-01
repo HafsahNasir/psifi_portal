@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSS  - Home</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background: #000000;
+            min-height: 100vh;
+            position: relative;
+            color: white;
+        }
+
+        /* Black background with subtle patterns */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+            z-index: 1;
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(173, 96, 224, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(96, 26, 92, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.8;
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(173, 96, 224, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(173, 96, 224, 0.03) 1px, transparent 1px);
+            background-size: 100px 100px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Main overlay container */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Floating brand accent elements */
+        .floating-accents {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .accent-element {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .accent-1 {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            right: 15%;
+            background: radial-gradient(circle, rgba(173, 96, 224, 0.08), transparent);
+            animation-delay: 0s;
+        }
+
+        .accent-2 {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            background: radial-gradient(circle, rgba(96, 26, 92, 0.06), transparent);
+            animation-delay: 4s;
+        }
+
+        .accent-3 {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            left: 10%;
+            background: radial-gradient(circle, rgba(173, 96, 224, 0.05), transparent);
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        /* Main content container */
+        .content {
+            position: relative;
+            z-index: 11;
+            max-width: 700px;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo styling */
+        .logo-container {
+            margin-bottom: 3rem;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(173, 96, 224, 0.3);
+            transition: transform 0.3s ease;
+            border: 2px solid rgba(173, 96, 224, 0.2);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 30px 60px rgba(173, 96, 224, 0.4);
+            border-color: rgba(173, 96, 224, 0.4);
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Typography */
+        .main-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #ad60e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Button styling */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            width: 100%;              /* Ensure full width */
+            margin: 0 auto;           /* Center container itself if needed */
+        }
+
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(173, 96, 224, 0.3);
+            background: rgba(173, 96, 224, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ad60e0, #601a5c);
+            border: none;
+            box-shadow: 0 4px 15px rgba(173, 96, 224, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #c084ea, #7a2470);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(173, 96, 224, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(173, 96, 224, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(173, 96, 224, 0.1);
+            border-color: rgba(173, 96, 224, 0.5);
+        }
+
+        /* Responsive design */
+        @media (min-width: 768px) {
+            .btn-container {
+                flex-direction: row;
+                gap: 1.5rem;
+                align-items: center;
+                justify-content: center;    /* <-- add this line! */
+            }
+        }
+
+        
+
+        /* Central glow effect */
+        .central-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(173, 96, 224, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+            z-index: 4;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1); 
+                opacity: 0.3; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2); 
+                opacity: 0.6; 
+            }
+        }
+
+        /* Loading animation */
+        .loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ad60e0, #601a5c);
+            transform: translateX(-100%);
+            animation: loading 2s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes loading {
+            to { transform: translateX(0); }
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(173, 96, 224, 0.1);
+            border: 1px solid rgba(173, 96, 224, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #ad60e0;
+            z-index: 12;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #ad60e0;
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(173, 96, 224, 0.5);
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(173, 96, 224, 0.5);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.2);
+                box-shadow: 0 0 20px rgba(173, 96, 224, 0.8);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ad60e0, #601a5c);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #c084ea, #7a2470);
+        }
+
+        /* Selection colors */
+        ::selection {
+            background: rgba(173, 96, 224, 0.3);
+            color: white;
+        }
+
+        ::-moz-selection {
+            background: rgba(173, 96, 224, 0.3);
+            color: white;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .status-indicator {
+                position: static;
+                margin-bottom: 2rem;
+                align-self: center;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .logo {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-bar"></div>
+    
+    <!-- Background Elements -->
+    <div class="background"></div>
+    <div class="grid-overlay"></div>
+    
+    <!-- Floating Accents -->
+    <div class="floating-accents">
+        <div class="accent-element accent-1"></div>
+        <div class="accent-element accent-2"></div>
+        <div class="accent-element accent-3"></div>
+    </div>
+
+    <div class="overlay">
+        <div class="central-glow"></div>
+        
+        <!-- Status Indicator -->
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>System Online</span>
+        </div>
+        
+        <div class="content">
+            <div class="logo-container">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-06-26%20at%2014.23.01-NitvmSHWu2FFKcOBLfTcwEhgiqH0bn.jpeg" alt="LSS Logo" class="logo">
+            </div>
+            
+            <h1 class="main-title">Welcome to LSS</h1>
+            <p class="subtitle">
+                Join the ultimate physics competition and showcase your scientific prowess. 
+                Connect with brilliant minds and push the boundaries of knowledge in our cutting-edge platform.
+            </p>
+            
+            <div class="btn-container">
+                <a href="{% url 'signup' %}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced entrance animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const content = document.querySelector('.content');
+            const statusIndicator = document.querySelector('.status-indicator');
+            
+            // Initial state
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(30px)';
+            statusIndicator.style.opacity = '0';
+            statusIndicator.style.transform = 'translateY(-20px)';
+            
+            // Animate in sequence
+            setTimeout(() => {
+                statusIndicator.style.transition = 'all 0.8s ease-out';
+                statusIndicator.style.opacity = '1';
+                statusIndicator.style.transform = 'translateY(0)';
+            }, 300);
+            
+            setTimeout(() => {
+                content.style.transition = 'all 1s ease-out';
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }, 600);
+        });
+
+        // Enhanced button interactions
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = this.classList.contains('btn-primary') 
+                    ? 'translateY(-2px) scale(1.02)' 
+                    : 'translateY(-2px)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Enhanced click ripple effect with brand colors
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(173, 96, 224, 0.4);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                    z-index: 1000;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Logo hover enhancement
+        document.querySelector('.logo').addEventListener('mouseenter', function() {
+            this.style.filter = 'brightness(1.1) saturate(1.2)';
+        });
+
+        document.querySelector('.logo').addEventListener('mouseleave', function() {
+            this.style.filter = 'brightness(1) saturate(1)';
+        });
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Parallax effect for floating elements
+        document.addEventListener('mousemove', function(e) {
+            const accents = document.querySelectorAll('.accent-element');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            accents.forEach((accent, index) => {
+                const speed = (index + 1) * 0.3;
+                const xPos = (x - 0.5) * speed * 20;
+                const yPos = (y - 0.5) * speed * 20;
+                
+                accent.style.transform = `translate(${xPos}px, ${yPos}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

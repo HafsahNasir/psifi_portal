@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+    <title>{% block title %}PSIFI - Campus Ambassador{% endblock %}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Join LSS '25 as a Campus Ambassador and lead Pakistan's most innovative high school science event.">
+    <meta name="keywords" content="Campus Ambassador, LSS 2025, Science Symposium, LUMS, Pakistan, Science Education">
+    <meta name="author" content="PSIFI">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{% block og_title %}LSS '25 Campus Ambassador Program{% endblock %}">
+    <meta property="og:description" content="Become a leader for Pakistan's most innovative high school science event.">
+    <meta property="og:type" content="website">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+    /* Reset and Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        scroll-behavior: smooth;
+        background: #0f0f0f;
+        color: #ffffff;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Main Container */
+    .ca-signup-page {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 25%, #16213e 50%, #1a0a2e 75%, #0a0a0a 100%);
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Background Elements */
+    .signup-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    .bg-element-1 {
+        position: absolute;
+        top: -8rem;
+        right: -8rem;
+        width: 20rem;
+        height: 20rem;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.08), transparent);
+        border-radius: 50%;
+        animation: float-1 8s ease-in-out infinite;
+        filter: blur(40px);
+    }
+
+    .bg-element-2 {
+        position: absolute;
+        bottom: -8rem;
+        left: -8rem;
+        width: 20rem;
+        height: 20rem;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.06), transparent);
+        border-radius: 50%;
+        animation: float-2 10s ease-in-out infinite;
+        filter: blur(40px);
+    }
+
+    .bg-element-3 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 25rem;
+        height: 25rem;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.08), transparent);
+        border-radius: 50%;
+        animation: pulse-slow 12s ease-in-out infinite;
+        filter: blur(60px);
+    }
+
+    /* Grid Pattern */
+    .grid-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        z-index: 2;
+    }
+
+    /* Header Section */
+    .page-header {
+        position: relative;
+        z-index: 10;
+        padding: 1rem;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: rgba(15, 15, 15, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 0.75rem;
+        color: rgba(196, 181, 253, 0.9);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        min-height: 44px; /* Touch-friendly minimum height */
+    }
+
+    .back-btn:hover {
+        background: rgba(139, 92, 246, 0.1);
+        border-color: rgba(139, 92, 246, 0.4);
+        color: #ffffff;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(139, 92, 246, 0.2);
+    }
+
+    .header-content {
+        text-align: center;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .header-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 4rem;
+        height: 4rem;
+        background: linear-gradient(135deg, #8b5cf6, #a855f7, #ec4899);
+        border-radius: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 
+            0 15px 30px rgba(139, 92, 246, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+        animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    .header-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .header-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 25%, #c4b5fd 50%, #a855f7 75%, #8b5cf6 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+    }
+
+    .header-subtitle {
+        font-size: 1rem;
+        color: rgba(196, 181, 253, 0.85);
+        line-height: 1.6;
+        font-weight: 400;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    /* Main Content */
+    .main-content {
+        position: relative;
+        z-index: 10;
+        padding: 1rem;
+    }
+
+    .content-grid {
+        max-width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Benefits Section */
+    .benefits-section {
+        background: rgba(15, 15, 15, 0.6);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        order: 2;
+    }
+
+    .benefits-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .benefits-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.75rem;
+        background: linear-gradient(135deg, #ffffff, #c4b5fd);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .benefits-description {
+        color: rgba(196, 181, 253, 0.8);
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .benefit-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem;
+        background: rgba(15, 15, 15, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(139, 92, 246, 0.1);
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-height: 80px; /* Consistent height for mobile */
+    }
+
+    .benefit-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(168, 85, 247, 0.02));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .benefit-card:hover {
+        background: rgba(15, 15, 15, 0.6);
+        border-color: rgba(139, 92, 246, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(139, 92, 246, 0.15);
+    }
+
+    .benefit-card:hover::before {
+        opacity: 1;
+    }
+
+    .benefit-icon {
+        flex-shrink: 0;
+        width: 3rem;
+        height: 3rem;
+        background: linear-gradient(135deg, #8b5cf6, #a855f7, #ec4899);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        position: relative;
+        z-index: 1;
+    }
+
+    .benefit-card:hover .benefit-icon {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    }
+
+    .benefit-content {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+    }
+
+    .benefit-content h3 {
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+    .benefit-content p {
+        color: rgba(196, 181, 253, 0.75);
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    /* About LSS Section */
+    .about-lss {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.06));
+        border: 1px solid rgba(139, 92, 246, 0.25);
+        border-radius: 1.25rem;
+        backdrop-filter: blur(10px);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .about-lss h3 {
+        color: white;
+        font-weight: 800;
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .about-lss i {
+        color: #a855f7;
+        font-size: 1.125rem;
+    }
+
+    .about-lss p {
+        color: rgba(196, 181, 253, 0.85);
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+
+    /* Form Section */
+    .form-section {
+        background: rgba(15, 15, 15, 0.6);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        order: 1;
+    }
+
+    .form-header {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #ffffff, #c4b5fd);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .form-description {
+        color: rgba(196, 181, 253, 0.8);
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    /* Enhanced Tally Form Container - Mobile Optimized */
+    .tally-container {
+        background: #000000;
+        border: none;
+        border-radius: 1.25rem;
+        padding: 0;
+        min-height: 500px;
+        margin-bottom: 1.5rem;
+        box-shadow: 
+            0 15px 30px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tally-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border-radius: 1.25rem;
+        z-index: 1;
+    }
+
+    .tally-container iframe {
+        border-radius: 1.25rem;
+        background: transparent;
+        position: relative;
+        z-index: 2;
+        box-shadow: none;
+        transition: all 0.3s ease;
+        border: none;
+        width: 100%;
+        height: 500px;
+    }
+
+    /* Application Tips */
+    .app-tips {
+        padding: 1.25rem;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.08));
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        border-radius: 1rem;
+        backdrop-filter: blur(10px);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .app-tips h4 {
+        color: #4ade80;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .app-tips ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .app-tips li {
+        color: rgba(74, 222, 128, 0.85);
+        font-size: 0.825rem;
+        margin-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        line-height: 1.4;
+    }
+
+    /* Tablet Responsive Design */
+    @media (min-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+        
+        .main-content {
+            padding: 1.5rem;
+        }
+        
+        .content-grid {
+            gap: 2.5rem;
+        }
+        
+        .benefits-section,
+        .form-section {
+            padding: 2rem;
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+        }
+        
+        .header-subtitle {
+            font-size: 1.125rem;
+        }
+        
+        .benefits-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+        
+        .tally-container iframe {
+            height: 600px;
+        }
+    }
+
+    /* Desktop Responsive Design */
+    @media (min-width: 1024px) {
+        .page-header {
+            padding: 2rem 1rem;
+        }
+        
+        .main-content {
+            padding: 0 1rem 4rem;
+        }
+        
+        .content-grid {
+            max-width: 85rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        
+        .benefits-section {
+            order: 1;
+            padding: 2.5rem;
+        }
+        
+        .form-section {
+            order: 2;
+            padding: 2.5rem;
+        }
+        
+        .header-title {
+            font-size: 3.5rem;
+        }
+        
+        .header-subtitle {
+            font-size: 1.25rem;
+        }
+        
+        .benefits-title {
+            font-size: 2.25rem;
+        }
+        
+        .form-title {
+            font-size: 2rem;
+        }
+        
+        .benefits-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .benefit-card {
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.5rem;
+        }
+        
+        .benefit-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .tally-container {
+            min-height: 650px;
+        }
+        
+        .tally-container iframe {
+            height: 650px;
+        }
+    }
+
+    /* Large Desktop */
+    @media (min-width: 1280px) {
+        .header-icon {
+            width: 5rem;
+            height: 5rem;
+        }
+        
+        .header-icon i {
+            font-size: 2.5rem;
+        }
+    }
+
+    /* Enhanced Animations */
+    @keyframes float-1 {
+        0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
+        33% { transform: translateY(-15px) rotate(120deg); opacity: 0.6; }
+        66% { transform: translateY(8px) rotate(240deg); opacity: 0.5; }
+    }
+
+    @keyframes float-2 {
+        0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+        50% { transform: translateY(-12px) rotate(180deg); opacity: 0.5; }
+    }
+
+    @keyframes pulse-slow {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+        50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.5; }
+    }
+
+    @keyframes glow {
+        0% { box-shadow: 0 15px 30px rgba(139, 92, 246, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1); }
+        100% { box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15); }
+    }
+
+    /* Selection Colors */
+    ::selection {
+        background: rgba(139, 92, 246, 0.3);
+        color: white;
+    }
+
+    ::-moz-selection {
+        background: rgba(139, 92, 246, 0.3);
+        color: white;
+    }
+
+    /* Enhanced Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(15, 15, 15, 0.5);
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #8b5cf6, #a855f7);
+        border-radius: 3px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #7c3aed, #9333ea);
+    }
+
+    /* Focus States */
+    *:focus-visible {
+        outline: 2px solid #a855f7;
+        outline-offset: 2px;
+    }
+
+    /* Loading States */
+    .tally-container iframe:not([src]) {
+        opacity: 0.7;
+        filter: blur(1px);
+    }
+
+    .tally-container iframe[src] {
+        opacity: 1;
+        filter: none;
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        .benefit-card:hover {
+            transform: none;
+        }
+        
+        .benefit-card:active {
+            transform: scale(0.98);
+        }
+        
+        .back-btn:hover {
+            transform: none;
+        }
+        
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+        .bg-element-1,
+        .bg-element-2,
+        .bg-element-3,
+        .header-icon {
+            animation: none;
+        }
+        
+        * {
+            transition-duration: 0.01ms !important;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="ca-signup-page">
+        <!-- Background Elements -->
+        <div class="signup-bg">
+            <div class="bg-element-1"></div>
+            <div class="bg-element-2"></div>
+            <div class="bg-element-3"></div>
+        </div>
+        <div class="grid-pattern"></div>
+
+        <!-- Header -->
+        <div class="page-header">
+            <div style="max-width: 80rem; margin: 0 auto;">
+                <a href="{% url 'calog' %}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Login</span>
+                </a>
+
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h1 class="header-title">Join LSS '25 as Campus Ambassador</h1>
+                    <p class="header-subtitle">
+                        Become a leader for Pakistan's most innovative high school science event. Shape the future of science education in your community.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-grid">
+                <!-- Form Section (Shows first on mobile) -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <h2 class="form-title">Application Form</h2>
+                        <p class="form-description">
+                            Fill out the form below to apply as a Campus Ambassador for LSS '25
+                        </p>
+                    </div>
+
+                    <!-- Tally Form Embed -->
+                    <div class="tally-container">
+                        <iframe
+                            data-tally-src="https://tally.so/embed/woZVBV?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                            loading="lazy"
+                            width="100%"
+                            height="500"
+                            frameborder="0"
+                            marginheight="0"
+                            marginwidth="0"
+                            allow="fullscreen"
+                            title="LSS '25 Campus Ambassador Application Form">
+                        </iframe>
+                    </div>
+
+                    <!-- Application Tips -->
+                    <div class="app-tips">
+                        <h4>
+                            <i class="fas fa-check-circle"></i>
+                            Application Tips
+                        </h4>
+                        <ul>
+                            <li>• Be specific about your leadership experience</li>
+                            <li>• Highlight your passion for science and education</li>
+                            <li>• Mention any relevant extracurricular activities</li>
+                            <li>• Show how you plan to engage your campus community</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Benefits Section -->
+                <div class="benefits-section">
+                    <div class="benefits-header">
+                        <h2 class="benefits-title">Why Become a Campus Ambassador?</h2>
+                        <p class="benefits-description">
+                            Join an exclusive community of student leaders and make a lasting impact on science education across Pakistan.
+                        </p>
+                    </div>
+
+                    <div class="benefits-grid">
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h3>Leadership Recognition</h3>
+                                <p>Official certificate and recognition as LSS '25 Campus Ambassador</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-percent"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h3>Discount</h3>
+                                <p>Get delegation fee off for yourself and your teams!</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h3>Special Perks</h3>
+                                <p>Free event access, exclusive merchandise, and priority registration</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h3>Skill Development</h3>
+                                <p>Enhance your leadership, communication, and event management skills</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h3>Portfolio Boost</h3>
+                                <p>Add prestigious experience to your academic and professional portfolio</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About LSS Section -->
+                    <div class="about-lss">
+                        <h3>
+                            <i class="fas fa-bolt"></i>
+                            About LSS '25
+                        </h3>
+                        <p>
+                            The LUMS Science Symposium (LSS) 2025 is a four-day interdisciplinary research competition scheduled from August 7th-10th, designed to transform how young students in Pakistan engage with science. LSS 2025 is not just a competition; it's a launchpad for future research leaders that empowers high school students to become problem-solvers, designers, and innovators.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load Tally embed script
+        var d = document;
+        var w = "https://tally.so/widgets/embed.js";
+        var v = function() {
+            if (typeof Tally !== 'undefined') {
+                Tally.loadEmbeds();
+            } else {
+                d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach(function(e) {
+                    e.src = e.dataset.tallySrc;
+                });
+            }
+        };
+        
+        if (typeof Tally !== 'undefined') {
+            v();
+        } else if (d.querySelector('script[src="' + w + '"]') === null) {
+            var s = d.createElement("script");
+            s.src = w;
+            s.onload = v;
+            s.onerror = v;
+            d.body.appendChild(s);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading animation for iframe
+        const iframe = document.querySelector('iframe[data-tally-src]');
+        if (iframe) {
+            iframe.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+        }
+
+        // Handle viewport height changes on mobile (for address bar)
+        function setViewportHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('orientationchange', setViewportHeight);
+    });
+    </script>
+</body>
+</html>

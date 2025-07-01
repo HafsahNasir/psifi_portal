@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ad60e0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>{% block title %}LSS Dashboard{% endblock %}</title>
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Base styles -->
+    <style>
+        /* Prevent text size adjustment on mobile */
+        html {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Prevent horizontal scroll */
+        body {
+            overflow-x: hidden;
+        }
+        
+        /* Touch action optimization */
+        * {
+            touch-action: manipulation;
+        }
+        
+        /* Focus styles for accessibility */
+        *:focus {
+            outline: 2px solid #ad60e0;
+            outline-offset: 2px;
+        }
+        
+        /* Remove focus outline for mouse users */
+        .js-focus-visible *:focus:not(.focus-visible) {
+            outline: none;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    
+    <!-- Focus visible polyfill for better accessibility -->
+    <script>
+        // Add focus-visible polyfill
+        (function() {
+            var hadKeyboardEvent = true;
+            var keyboardThrottleTimeout = 0;
+            
+            function onPointerDown() {
+                hadKeyboardEvent = false;
+            }
+            
+            function onKeyDown(e) {
+                if (e.metaKey || e.altKey || e.ctrlKey) {
+                    return;
+                }
+                hadKeyboardEvent = true;
+            }
+            
+            function onFocus(e) {
+                if (hadKeyboardEvent || e.target.matches(':focus-visible')) {
+                    e.target.classList.add('focus-visible');
+                }
+            }
+            
+            function onBlur(e) {
+                e.target.classList.remove('focus-visible');
+            }
+            
+            document.addEventListener('keydown', onKeyDown, true);
+            document.addEventListener('mousedown', onPointerDown, true);
+            document.addEventListener('pointerdown', onPointerDown, true);
+            document.addEventListener('touchstart', onPointerDown, true);
+            document.addEventListener('focus', onFocus, true);
+            document.addEventListener('blur', onBlur, true);
+            
+            document.body.classList.add('js-focus-visible');
+        })();
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

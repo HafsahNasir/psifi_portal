@@ -1,0 +1,669 @@
+{% extends "base.html" %}
+
+{% block title %}Campus Ambassador Login - PSIFI{% endblock %}
+
+{% block content %}
+<style>
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ca-login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+  color: #ffffff;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Animated Background Elements */
+.bg-elements {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.orb-1 {
+  top: -10rem;
+  right: -10rem;
+  width: 20rem;
+  height: 20rem;
+  background: rgba(168, 85, 247, 0.1);
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  bottom: -10rem;
+  left: -10rem;
+  width: 20rem;
+  height: 20rem;
+  background: rgba(59, 130, 246, 0.1);
+  animation-delay: 1s;
+}
+
+.orb-3 {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24rem;
+  height: 24rem;
+  background: rgba(147, 51, 234, 0.05);
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Grid Pattern */
+.grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: 2;
+}
+
+/* Main Container */
+.login-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(147, 51, 234, 0.1);
+  animation: slideUp 0.8s ease-out;
+}
+
+/* Header */
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
+}
+
+.login-icon i {
+  font-size: 2rem;
+  color: white;
+}
+
+.login-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff, #c4b5fd, #a855f7);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.login-subtitle {
+  font-size: 0.875rem;
+  color: rgba(196, 181, 253, 0.8);
+  font-weight: 400;
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  height: 3rem;
+  padding: 0 1rem 0 2.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #a855f7;
+  background: rgba(168, 85, 247, 0.08);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a855f7;
+  font-size: 1.25rem;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.form-input:focus + .input-icon {
+  color: #c084fc;
+}
+
+/* Password Toggle */
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a855f7;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: color 0.3s ease;
+  z-index: 5;
+}
+
+.password-toggle:hover {
+  color: #c084fc;
+}
+
+/* Error Message */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 0.75rem;
+  color: #fca5a5;
+  font-size: 0.875rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.error-icon {
+  font-size: 1rem;
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  color: white;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.submit-btn:hover::before {
+  left: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0) scale(1);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Navigation Links */
+.nav-links {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nav-btn {
+  width: 100%;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.nav-btn.ghost {
+  background: transparent;
+  border: none;
+  color: #c4b5fd;
+}
+
+.nav-btn.ghost:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-btn.outline {
+  background: transparent;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c4b5fd;
+}
+
+.nav-btn.outline:hover {
+  color: white;
+  background: rgba(168, 85, 247, 0.2);
+  border-color: #a855f7;
+}
+
+/* Demo Credentials */
+.demo-credentials {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.demo-title {
+  font-size: 0.75rem;
+  color: rgba(196, 181, 253, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.demo-item {
+  font-size: 0.75rem;
+  color: rgba(196, 181, 253, 0.8);
+  margin-bottom: 0.25rem;
+}
+
+.demo-code {
+  font-family: 'Courier New', monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin: 0 0.25rem;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.6;
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .login-title {
+    font-size: 1.5rem;
+  }
+  
+  .login-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  
+  .login-icon i {
+    font-size: 1.75rem;
+  }
+  
+  .floating-orb {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) {
+  .ca-login-page {
+    padding: 0.5rem;
+  }
+  
+  .login-card {
+    padding: 1.5rem;
+  }
+  
+  .login-header {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .floating-orb,
+  .login-card,
+  .login-icon {
+    animation: none;
+  }
+  
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Selection Colors */
+::selection {
+  background: rgba(168, 85, 247, 0.3);
+  color: white;
+}
+
+::-moz-selection {
+  background: rgba(168, 85, 247, 0.3);
+  color: white;
+}
+</style>
+
+<div class="ca-login-page">
+  <!-- Animated Background Elements -->
+  <div class="bg-elements">
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+  </div>
+  
+  <!-- Grid Pattern Overlay -->
+  <div class="grid-pattern"></div>
+  
+  <!-- Main Login Container -->
+  <div class="login-container">
+    <div class="login-card">
+      <!-- Header -->
+      <div class="login-header">
+        <div class="login-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <h1 class="login-title">Campus Ambassador</h1>
+        <p class="login-subtitle">Access your dashboard with your credentials</p>
+      </div>
+      
+      <!-- Login Form -->
+      <form method="post" class="login-form" id="loginForm">
+        {% csrf_token %}
+        
+        <!-- Ambassador Code Input -->
+        <div class="form-group">
+          <label for="code" class="form-label">Ambassador Code</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="code" 
+              name="code" 
+              class="form-input" 
+              placeholder="Enter your ambassador code"
+              required
+              autocomplete="username"
+              spellcheck="false"
+            >
+            <i class="fas fa-user input-icon"></i>
+          </div>
+        </div>
+        
+        <!-- Password Input -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            >
+            <i class="fas fa-lock input-icon"></i>
+            <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+          </div>
+        </div>
+        
+        <!-- Error Message -->
+        {% if error %}
+        <div class="error-message">
+          <i class="fas fa-exclamation-triangle error-icon"></i>
+          <span>{{ error }}</span>
+        </div>
+        {% endif %}
+        
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span id="btnText">Access Dashboard</span>
+        </button>
+      </form>
+      
+      <!-- Navigation Links -->
+      <div class="nav-links">
+        <a href="{% url 'dashboard' %}" class="nav-btn ghost">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back to Home</span>
+        </a>
+        
+        <a href="{% url 'ca_signup' %}" class="nav-btn outline">
+          <i class="fas fa-user-plus"></i>
+          <span>Not a Campus Ambassador? Sign Up</span>
+        </a>
+      </div>
+    </div>
+    
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('loginForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const codeInput = document.getElementById('code');
+  const passwordInput = document.getElementById('password');
+  const togglePassword = document.getElementById('togglePassword');
+
+  // Auto-focus on code input
+  codeInput.focus();
+
+  // Password toggle functionality
+  togglePassword.addEventListener('click', function() {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    // Toggle icon
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+  });
+
+  // Form submission handling
+  form.addEventListener('submit', function(e) {
+    const code = codeInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!code || !password) {
+      e.preventDefault();
+      if (!code) codeInput.focus();
+      else if (!password) passwordInput.focus();
+      return;
+    }
+
+    // Show loading state
+    submitBtn.disabled = true;
+    btnText.innerHTML = '<div class="loading-spinner"></div>Verifying...';
+  });
+
+  // Input formatting for code (uppercase, remove spaces)
+  codeInput.addEventListener('input', function(e) {
+    let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    e.target.value = value;
+  });
+
+  // Enter key handling
+  codeInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      passwordInput.focus();
+    }
+  });
+
+  passwordInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      form.submit();
+    }
+  });
+
+  // Parallax effect for floating orbs
+  document.addEventListener('mousemove', function(e) {
+    const orbs = document.querySelectorAll('.floating-orb');
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+
+    orbs.forEach((orb, index) => {
+      const speed = (index + 1) * 0.1;
+      const xPos = (x - 0.5) * speed * 30;
+      const yPos = (y - 0.5) * speed * 30;
+      orb.style.transform = `translate(${xPos}px, ${yPos}px)`;
+    });
+  });
+
+  // Clear error on input
+  [codeInput, passwordInput].forEach(input => {
+    input.addEventListener('input', function() {
+      const errorMsg = document.querySelector('.error-message');
+      if (errorMsg) {
+        errorMsg.style.opacity = '0';
+        setTimeout(() => errorMsg.remove(), 300);
+      }
+    });
+  });
+});
+</script>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+{% endblock %}
