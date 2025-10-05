@@ -20,3 +20,18 @@ class CustomSignupForm(UserCreationForm):
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("A user with that email already exists.")
         return email
+    
+from django import forms
+
+class NamePasswordResetForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=150)
+    first_name = forms.CharField(label="First Name", max_length=30)
+    last_name = forms.CharField(label="Last Name", max_length=30)
+    new_password1 = forms.CharField(label="New Password", widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label="Confirm New Password", widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get('new_password1') != cleaned_data.get('new_password2'):
+            self.add_error('new_password2', "Passwords do not match.")
+        return cleaned_data

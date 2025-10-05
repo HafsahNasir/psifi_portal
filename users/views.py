@@ -468,3 +468,28 @@ def ca_login_view(request):
         except CampusAmbassador.DoesNotExist:
             error = "Code not found."
     return render(request, "ca_login.html", {"error": error})
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib import messages
+from .forms import NamePasswordResetForm  # Adjust path as needed
+@csrf_exempt
+def name_password_reset(request):
+    if request.method == "POST":
+        form = NamePasswordResetForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            new_password = form.cleaned_data['new_password1']
+
+            try:
+                user = User.objects.get(username=username, first_name=first_name, last_name=last_name)
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, "Password reset successful. You can now log in with your new password.")
+                return redirect('login')  # Use your login url name
+            except User.DoesNotExist:
+                messages.error(request, "No user found with this information.")
+    else:
+        form = NamePasswordResetForm()
+    return render(request, 'name_password_reset.html', {'form': form})

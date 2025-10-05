@@ -41,6 +41,7 @@ urlpatterns = [
     path('cad/', views.cadashboard, name='ca'),
     path('ca_login/', views.ca_login_view, name='calog'),
     path('ca_signup/',views.casignup,name ='ca_signup'),
+    path('name-password-reset/', views.name_password_reset, name='name_password_reset'),
 
 
 
