@@ -1,6 +1,6 @@
 {% extends 'base1.html' %} 
 {% load static %} 
-{% block title %}Dashboard - LSS{% endblock %} 
+{% block title %}Dashboard - PsiFi XVII{% endblock %} 
 {% block extra_css %}
 <style>
   /* Reset and Base Styles */
@@ -348,11 +348,17 @@
     --accent-color: #f59e0b;
   }
 
-  /* Footer Section */
+  /* Footer Section - Completely separate from cards */
   .footer-section {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2rem 0;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 2rem;
+    clear: both;
   }
 
   .logout-btn {
@@ -523,11 +529,10 @@
       max-width: none;
     }
 
-    /* DESKTOP: 2x2 Grid Layout */
+    /* DESKTOP: 2x3 Grid Layout for 6 cards */
     .nav-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto;
       gap: 1.5rem;
       max-width: 1000px;
       margin: 0 auto 3rem auto;
@@ -706,7 +711,7 @@
 
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
 
   ::-webkit-scrollbar-track {
@@ -714,12 +719,15 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #33cc33, #003300);
-    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(51, 204, 51, 0.2);
+    border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #66ff66, #003300);
+    background: rgba(51, 204, 51, 0.2);
+    backdrop-filter: blur(15px);
   }
 
   /* Selection Colors */
@@ -766,7 +774,7 @@
             Welcome back, {{ request.user.username }}
           </h1>
           <p class="welcome-subtitle">
-            LSS Dashboard - Manage your competition journey
+            PsiFi XVII Dashboard - Manage your competition journey
           </p>
         </div>
         <div class="header-actions">
@@ -820,7 +828,7 @@
                 announcements.
               </p>
               <a
-                href="https://www.instagram.com/lss_spades/"
+                href="https://www.instagram.com/lumspsifi/"
                 class="card-action"
                 target="_blank"
                 rel="noopener"
@@ -839,7 +847,7 @@
             <div class="card-content">
               <h3 class="card-title">Event Schedule</h3>
               <p class="card-description">Schedule for the event.</p>
-              <a href="{% url 'media' %}" class="card-action">
+              <a href="{% url 'schedule' %}" class="card-action">
                 <span>View Schedule</span>
                 <i class="fas fa-arrow-right"></i>
               </a>
@@ -902,7 +910,7 @@
         </div>
 
         <!-- Card 7: Campus Ambassador -->
-        <div class="nav-card card-contact fade-in">
+        <!-- <div class="nav-card card-contact fade-in">
           <div class="card-header">
             <div class="card-icon"><i class="fas fa-percent"></i></div>
             <div class="card-content">
@@ -916,12 +924,12 @@
               </a>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
-      <!-- Footer Section -->
+      <!-- Footer Section - Separated from cards -->
       <div class="footer-section fade-in">
-        <form action="{% url 'logout' %}" method="post" style="display: inline">
+        <form action="{% url 'logout' %}" method="post" style="display: flex; justify-content: center; width: 100%;">
           {% csrf_token %}
           <button type="submit" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i>

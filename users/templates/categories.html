@@ -122,7 +122,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 1rem;
 }
@@ -203,7 +203,7 @@ body {
     flex-direction: column;
     gap: 1.5rem;
     margin-bottom: 2rem;
-    max-width: 1100px;
+    max-width: 1300px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -444,11 +444,10 @@ body {
         left: 15%;
     }
 
-    /* 2x2 Grid Layout for Desktop */
+    /* 3-Column Grid Layout for Desktop */
     .categories-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
     }
 
@@ -458,10 +457,28 @@ body {
     }
 }
 
+/* Tablet: 2-Column Grid */
+@media (min-width: 600px) and (max-width: 1023px) {
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .category-button {
+        min-height: 240px;
+        padding: 2rem 1.5rem;
+    }
+}
+
 /* Large Desktop */
 @media (min-width: 1200px) {
     .category-button {
         min-height: 320px;
+    }
+    
+    .categories-grid {
+        gap: 2.5rem;
     }
 }
 
@@ -597,7 +614,7 @@ body {
             <!-- Categories Grid -->
             <div class="categories-grid">
                 <a href="/media/aiml.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-brain"></i></div>
+                    <div class="category-icon"><i class="fas fa-search"></i></div>
                     <h3 class="category-name">SCIENCE CRIME BUSTERS</h3>
                     <p class="category-description">SCB is a forensic science event that transforms participants
                         into crime scene investigators. Through a series of escalating
@@ -610,7 +627,7 @@ body {
                 </a>
 
                 <a href="/media/life.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-dna"></i></div>
+                    <div class="category-icon"><i class="fas fa-hammer"></i></div>
                     <h3 class="category-name">SIEGE</h3>
                     <p class="category-description">Siege is PsiFi’s ultimate engineering showdown, where
                         participants design and build structures like bridges, gliders,
@@ -623,7 +640,7 @@ body {
                 </a>
 
                 <a href="/media/quantum.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-atom"></i></div>
+                    <div class="category-icon"><i class="fas fa-plane"></i></div>
                     <h3 class="category-name">RC PLANES</h3>
                     <p class="category-description">Participants will design, build, and fly their own remote-
                         controlled aircraft, pushing the limits of aerodynamics and
@@ -636,7 +653,7 @@ body {
                 </a>
 
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-icon"><i class="fas fa-masks-theater"></i></div>
                     <h3 class="category-name">SCIFINITY</h3>
                     <p class="category-description">Scifinity is a fandom-based science event that blends pop
                         culture with debate, creativity, and problem-solving. From
@@ -648,7 +665,7 @@ body {
                 </a>
 
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-icon"><i class="fas fa-stethoscope"></i></div>
                     <h3 class="category-name">DIAGNOSIS DILEMMA</h3>
                     <p class="category-description">This medical-themed event immerses participants in high-
                         stakes scenarios, from emergency diagnoses to courtroom
@@ -663,7 +680,7 @@ body {
                 </a>
 
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-icon"><i class="fas fa-palette"></i></div>
                     <h3 class="category-name">PIXEL SPECTRUM</h3>
                     <p class="category-description">This medical-themed event immerses participants in high-
                         Pixel Spectrum is PsiFi’s creative tech-arts event, blending
@@ -675,7 +692,7 @@ body {
                 </a>
 
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-icon"><i class="fas fa-atom"></i></div>
                     <h3 class="category-name">OPPENHEIMER’S ODYSSEY</h3>
                     <p class="category-description">Oppenheimer’s Odyssey is PsiFi’s flagship physics event,
                         blending theoretical problem-solving, hands-on experiments,
@@ -687,7 +704,7 @@ body {
                 </a>
 
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-icon"><i class="fas fa-calculator"></i></div>
                     <h3 class="category-name">MATH GAUGE</h3>
                     <p class="category-description">Math Gauge is a fast-paced, interactive math event that
                         blends logic, speed, and creativity. From mental math
@@ -699,7 +716,7 @@ body {
                 </a>
 
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-icon"><i class="fas fa-code"></i></div>
                     <h3 class="category-name">TECHWARS</h3>
                     <p class="category-description">Techwars reimagines computer science challenges through
                         fast-paced debugging sprints, hardware-based scavenger
@@ -724,7 +741,7 @@ body {
                 </a>
 
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
-                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-icon"><i class="fas fa-rocket"></i></div>
                     <h3 class="category-name">THE LAZARUS MISSIONS</h3>
                     <p class="category-description">PsiFi’s astrophysics category that brings space science
                         down to Earth. From observing celestial bodies to decoding

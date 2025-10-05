@@ -1,0 +1,453 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule - PsiFi XVII</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        overflow-x: hidden;
+        background: #000000;
+        min-height: 100vh;
+        position: relative;
+        color: white;
+      }
+
+      /* Same background as home.html */
+      .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg,
+          #000000 0%,
+          #030a06 42%,
+          #082015 70%,
+          #062a14 100%
+        );
+        background-attachment: fixed;
+        z-index: 1;
+      }
+
+      .background::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(
+          circle at 25% 25%,
+          rgba(5, 59, 5, 0.03) 1px,
+          transparent 1px
+        ),
+        radial-gradient(
+          circle at 75% 75%,
+          rgba(0, 20, 0, 0.02) 1px,
+          transparent 1px
+        );
+        background-size: 50px 50px;
+        opacity: 0.8;
+      }
+
+      /* Floating Orbs (same as home.html) */
+      .background-elements {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .floating-orb { 
+        filter: blur(64px); 
+        opacity: 0.40; 
+      }
+
+      .orb-1 {
+        width: 320px; 
+        height: 320px;
+        background: radial-gradient(circle at 30% 30%,
+          rgba(12, 134, 96, 0.45), rgba(4, 30, 18, 0.65));
+        position: absolute;
+        top: -10%;
+        left: -5%;
+      }
+
+      .orb-2 {
+        width: 420px; 
+        height: 420px;
+        background: radial-gradient(circle at 70% 40%,
+          rgba(24, 160, 80, 0.45), rgba(3, 18, 10, 0.65));
+        position: absolute;
+        bottom: -15%;
+        right: -10%;
+      }
+
+      .orb-3 {
+        width: 360px; 
+        height: 360px;
+        background: radial-gradient(circle at 50% 50%,
+          rgba(6, 92, 70, 0.35), rgba(0, 0, 0, 0.70));
+        position: absolute;
+        top: 40%;
+        right: 5%;
+      }
+
+      /* Floating Particles (same as home.html) */
+      .particles-container {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .particle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: rgba(255,255,255,0.12);
+        border-radius: 50%;
+        animation: particleFloat 8s linear infinite;
+        box-shadow: 0 0 8px rgba(255,255,255,0.15);
+      }
+
+      .particle:nth-child(odd) { animation-duration: 6s; }
+      .particle:nth-child(even){ animation-duration: 10s; }
+
+      /* particle positions and delays */
+      .particle-1 { left: 10%; animation-delay: 0s; }
+      .particle-2 { left: 20%; animation-delay: 1s; }
+      .particle-3 { left: 30%; animation-delay: 2s; }
+      .particle-4 { left: 40%; animation-delay: 3s; }
+      .particle-5 { left: 50%; animation-delay: 4s; }
+      .particle-6 { left: 60%; animation-delay: 5s; }
+      .particle-7 { left: 70%; animation-delay: 6s; }
+      .particle-8 { left: 80%; animation-delay: 7s; }
+      .particle-9 { left: 90%; animation-delay: 8s; }
+      .particle-10 { left: 15%; animation-delay: 9s; }
+      .particle-11 { left: 25%; animation-delay: 10s; }
+      .particle-12 { left: 35%; animation-delay: 11s; }
+      .particle-13 { left: 45%; animation-delay: 12s; }
+      .particle-14 { left: 55%; animation-delay: 13s; }
+      .particle-15 { left: 65%; animation-delay: 14s; }
+      .particle-16 { left: 75%; animation-delay: 15s; }
+      .particle-17 { left: 85%; animation-delay: 16s; }
+      .particle-18 { left: 95%; animation-delay: 17s; }
+      .particle-19 { left: 5%; animation-delay: 18s; }
+      .particle-20 { left: 95%; animation-delay: 19s; }
+
+      @keyframes particleFloat {
+        0% {
+          transform: translateY(100vh) translateX(0px);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100px) translateX(100px);
+          opacity: 0;
+        }
+      }
+
+      /* Main overlay container */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+        text-align: center;
+        z-index: 10;
+      }
+
+      /* Main content container */
+      .content {
+        position: relative;
+        z-index: 11;
+        max-width: 700px;
+        padding: 3rem 2rem;
+        background: hsla(120, 8%, 5%, 0.462);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(5, 24, 3, 0.462);
+        border-radius: 24px;
+        animation: fadeInUp 1s ease-out;
+        text-align: center;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Typography */
+      .main-title {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff 0%, #e6ede6 30%, #89a989 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+      }
+
+      .date-text {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        font-weight: 600;
+        margin-bottom: 2rem;
+        color: #33cc33;
+        line-height: 1.4;
+      }
+
+      .coming-soon {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+        margin-bottom: 3rem;
+      }
+
+      /* Back button */
+      .back-btn {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        background: linear-gradient(135deg, #17501C 0%, #003122 100%);
+        border: none;
+        color: white;
+        padding: 1rem 2.5rem;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-width: 200px;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(23,80,28,0.25);
+      }
+
+      .back-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .back-btn:hover::before {
+        left: 100%;
+      }
+
+      .back-btn:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 14px 40px rgba(23,80,28,0.30);
+        background: linear-gradient(135deg, #1c6b22 0%, #003122 100%);
+        color: white;
+        text-decoration: none;
+      }
+
+      /* Loading animation */
+      .loading-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, #33cc33, #003300);
+        transform: translateX(-100%);
+        animation: loading 2s ease-out;
+        z-index: 1000;
+      }
+
+      @keyframes loading {
+        to {
+          transform: translateX(0);
+        }
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #000000;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #33cc33, #003300);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #66ff66, #7a2470);
+      }
+
+      /* Selection colors */
+      ::selection {
+        background: rgba(51, 204, 51, 0.3);
+        color: white;
+      }
+
+      ::-moz-selection {
+        background: rgba(51, 204, 51, 0.3);
+        color: white;
+      }
+
+      /* Mobile optimizations */
+      @media (max-width: 768px) {
+        .content {
+          margin: 1rem;
+          padding: 2rem 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading-bar"></div>
+
+    <!-- Background Elements (same as home.html) -->
+    <div class="background"></div>
+
+    <!-- Floating Orbs -->
+    <div class="background-elements">
+      <div class="floating-orb orb-1"></div>
+      <div class="floating-orb orb-2"></div>
+      <div class="floating-orb orb-3"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles-container">
+      {% for i in "12345678901234567890" %}
+        <div class="particle particle-{{ forloop.counter }}"></div>
+      {% endfor %}
+    </div>
+
+    <div class="overlay">
+      <div class="content">
+        <h1 class="main-title">PsiFi XVII</h1>
+        <p class="date-text">26th to 29th December</p>
+        <p class="coming-soon">Schedule Coming Soon..</p>
+        
+        <a href="{% url 'dashboard' %}" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <script>
+      // Enhanced button interactions
+      document.querySelectorAll(".back-btn").forEach((btn) => {
+        btn.addEventListener("mouseenter", function () {
+          this.style.transform = "translateY(-2px) scale(1.02)";
+        });
+
+        btn.addEventListener("mouseleave", function () {
+          this.style.transform = "translateY(0) scale(1)";
+        });
+      });
+
+      // Enhanced click ripple effect
+      document.querySelectorAll(".back-btn").forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          const ripple = document.createElement("span");
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+
+          ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+          `;
+
+          this.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+
+      // Add CSS for ripple animation
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes ripple {
+          to {
+            transform: scale(4);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Parallax effect for floating elements
+      document.addEventListener("mousemove", function (e) {
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+
+        document.querySelectorAll(".floating-orb").forEach((orb, index) => {
+          const speed = (index + 1) * 0.5;
+          const x = (mouseX - 0.5) * speed;
+          const y = (mouseY - 0.5) * speed;
+          orb.style.transform = `translate(${x}px, ${y}px)`;
+        });
+      });
+    </script>
+  </body>
+</html>
