@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>LUMS Science Symposium 2025</title>
+    <title>PsiFi XVII</title>
     <style type="text/css">
       html, body {
         margin: 0;
@@ -347,12 +347,21 @@
       .form-container .c-forms-branding {
         display: none !important;
       }
+
+      .header{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+        padding: 15px 50px;
+        z-index: 11;
+
+      }
       
       .dashboard-btn {
-        position: fixed;
-        top: 24px;
-        right: 24px;
-        z-index: 9999;
+        position: relative;
+        z-index: 10;
         background: linear-gradient(135deg, #17501C 0%, #003122 100%);
         color: #fff;
         padding: 0.6rem 1.2rem;
@@ -370,7 +379,7 @@
       .cog-modal,
       .cog-overlay,
       .cog-confirm-dialog {
-        z-index: 99999 !important;
+        z-index: 11 !important;
         background: rgba(0, 0, 0, 0.8) !important;
         backdrop-filter: blur(10px) !important;
       }
@@ -529,8 +538,10 @@
       <div class="particle" style="left: 5%; animation-delay: 18s;"></div>
       <div class="particle" style="left: 95%; animation-delay: 19s;"></div>
     </div>
-
-    <a href="/dashboard/" class="dashboard-btn">Dashboard</a>
+    <div class="header">
+      <img src="../../static/images/logo_psifi.png" alt="" style="max-width: 100px; z-index: 20; position: relative;">
+      <a href="/dashboard/" class="dashboard-btn">Dashboard</a>
+    </div>
     <div class="form-container">
       <script src="https://www.cognitoforms.com/f/seamless.js" data-key="B1EGXzUdukiPlRx54XWcPQ" data-form="1" data-style="chameleon"></script>
     </div>
