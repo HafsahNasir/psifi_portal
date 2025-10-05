@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Join LSS - Create Account{% endblock %}
+{% block title %}Join PsiFi XVII - Create Account{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/signup.css' %}">
@@ -19,7 +19,12 @@
 
 .signup-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg,
+    #000000 0%,
+    #030a06 42%,
+    #082015 70%,
+    #0b3d1f 100%
+  );
   background-attachment: fixed;
   position: relative;
   overflow: hidden;
@@ -29,78 +34,50 @@
 /* Animated Background Elements */
 .background-elements {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   overflow: hidden;
   z-index: 1;
 }
 
-.floating-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: float 6s ease-in-out infinite;
-}
+.floating-orb { filter: blur(64px); opacity: 0.40; }
+
 
 .orb-1 {
-  width: 300px;
-  height: 300px;
-  background: rgba(147, 51, 234, 0.3);
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle at 30% 30%,
+    rgba(12, 134, 96, 0.45), rgba(4, 30, 18, 0.65));
 }
-
 .orb-2 {
-  width: 400px;
-  height: 400px;
-  background: rgba(59, 130, 246, 0.3);
-  top: 20%;
-  right: 10%;
-  animation-delay: 2s;
+  width: 420px; height: 420px;
+  background: radial-gradient(circle at 70% 40%,
+    rgba(24, 160, 80, 0.45), rgba(3, 18, 10, 0.65));
 }
-
 .orb-3 {
-  width: 350px;
-  height: 350px;
-  background: rgba(99, 102, 241, 0.3);
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  animation-delay: 4s;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(6, 92, 70, 0.35), rgba(0, 0, 0, 0.70));
 }
 
 /* Floating Particles */
 .particles-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   overflow: hidden;
   z-index: 1;
 }
 
 .particle {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 6px;
+  height: 6px;
+  background: rgba(255,255,255,0.18); /* white */
   border-radius: 50%;
   animation: particleFloat 8s linear infinite;
+  box-shadow: 0 0 8px rgba(255,255,255,0.25); /* soft glow */
 }
 
-.particle:nth-child(odd) {
-  animation-duration: 6s;
-  background: rgba(147, 51, 234, 0.2);
-}
-
-.particle:nth-child(even) {
-  animation-duration: 10s;
-  background: rgba(59, 130, 246, 0.2);
-}
+.particle:nth-child(odd) { animation-duration: 6s; }
+.particle:nth-child(even){ animation-duration: 10s; }
 
 /* Generate random positions for particles */
 .particle-1 { left: 10%; animation-delay: 0s; }
@@ -585,7 +562,7 @@
             <div class="logo-circle">
               <span class="logo-text">Ψ</span>
             </div>
-            <h1 class="signup-title">Join LSS</h1>
+            <h1 class="signup-title">Join PsiFi XVII</h1>
             <p class="signup-subtitle">Create your account to get started</p>
           </div>
         </div>

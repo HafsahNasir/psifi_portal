@@ -299,9 +299,10 @@
       }
 
       .btn-primary {
-        background: linear-gradient(135deg, #33cc33, #003300);
-        border: none;
-        box-shadow: 0 4px 15px rgba(51, 204, 51, 0.3);
+        color: #ffffff;
+        background: linear-gradient(135deg, #0b3d1f 0%, #0e5b2e 55%, #11914a 100%);
+        border: 1px solid rgba(22, 163, 74, 0.35); /* emerald rim */
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.18);
       }
 
       .btn-primary:hover {
@@ -309,6 +310,24 @@
         transform: translateY(-2px) scale(1.02);
         box-shadow: 0 8px 25px rgba(51, 204, 51, 0.4);
       }
+      background: linear-gradient(135deg, #0a2b19 0%, #0f4d28 45%, #16a34a 100%);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 32px rgba(16, 185, 129, 0.28);
+      border-color: rgba(52, 211, 153, 0.45);
+      }
+      
+      .btn-primary:active {
+      transform: translateY(0) scale(0.99);
+      background: linear-gradient(135deg, #081f14 0%, #0c3b22 60%, #128844 100%);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.18);
+      }
+
+      .btn-primary:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 3px rgba(52, 211, 153, 0.22),   /* focus ring */
+        0 8px 24px rgba(16, 185, 129, 0.18);  /* keep glow */
+     }
 
       .btn-secondary {
         background: rgba(255, 255, 255, 0.05);
@@ -502,6 +521,8 @@
         <p class="subtitle">
         Join PsiFi XVII, Pakistan’s biggest student-run science Olympiad at LUMS.
         Dive into thrilling STEM challenges, meet passionate innovators, and experience four unforgettable days of creativity, competition, and community.
+          Join PsiFi XVII, Pakistan’s biggest student-run science Olympiad at LUMS.
+          Experience four unforgettable days of creativity, competition, and community.
         </p>
 
         <div class="btn-container">
