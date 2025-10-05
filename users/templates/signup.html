@@ -25,88 +25,64 @@
 
 .signup-page {
   min-height: 100vh;
-  background: url('../../static/images/psifi_bg.png');
-  background-size: cover;            /* fills entire screen */
-  background-position: center center; /* keeps the focus in the middle */
-  background-repeat: repeat-x;      /* prevent tiling */
-  background-attachment: fixed;      /* optional: gives a nice parallax-like effect */
-  background-color: black;           /* fallback in case image doesn’t load */
+  background: linear-gradient(135deg,
+    #000000 0%,
+    #030a06 42%,
+    #082015 70%,
+    #0b3d1f 100%
+  );
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
 /* Animated Background Elements */
 .background-elements {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   overflow: hidden;
   z-index: 1;
 }
 
-.floating-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: float 6s ease-in-out infinite;
-}
+.floating-orb { filter: blur(64px); opacity: 0.40; }
+
 
 .orb-1 {
-  width: 350px;
-  height: 350px;
-  background: rgba(51, 204, 51, 0.4);
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle at 30% 30%,
+    rgba(12, 134, 96, 0.45), rgba(4, 30, 18, 0.65));
 }
-
 .orb-2 {
-  width: 350px;
-  height: 350px;
-  background: rgba(51, 204, 51, 0.4);
-  top: 10%;
-  right: 10%;
-  animation-delay: 2s;
+  width: 420px; height: 420px;
+  background: radial-gradient(circle at 70% 40%,
+    rgba(24, 160, 80, 0.45), rgba(3, 18, 10, 0.65));
 }
-
 .orb-3 {
-  width: 350px;
-  height: 350px;
-  background: rgba(51, 204, 51, 0.4);
-  bottom: 10%;
-  left: 10%;
-  animation-delay: 4s;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(6, 92, 70, 0.35), rgba(0, 0, 0, 0.70));
 }
 
 /* Floating Particles */
 .particles-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   overflow: hidden;
   z-index: 1;
 }
 
 .particle {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  background: rgba(51, 204, 51, 0.4);
+  width: 6px;
+  height: 6px;
+  background: rgba(255,255,255,0.18); /* white */
   border-radius: 50%;
   animation: particleFloat 8s linear infinite;
+  box-shadow: 0 0 8px rgba(255,255,255,0.25); /* soft glow */
 }
 
-.particle:nth-child(odd) {
-  animation-duration: 6s;
-  background: rgba(51, 204, 51, 0.4);
-}
-
-.particle:nth-child(even) {
-  animation-duration: 10s;
-  background: rgba(34, 140, 34, 0.4);
-}
+.particle:nth-child(odd) { animation-duration: 6s; }
+.particle:nth-child(even){ animation-duration: 10s; }
 
 /* Generate random positions for particles */
 .particle-1 { left: 10%; animation-delay: 0s; }
@@ -359,7 +335,7 @@
 .register-btn {
   width: 100%;
   height: 48px;
-  background: rgb(30, 148, 30);
+  background: linear-gradient(135deg, #17501C 0%, #003122 100%);
   border: none;
   border-radius: 12px;
   color: white;
@@ -367,9 +343,14 @@
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 25px rgba(51, 204, 51, 0.2);
+  box-shadow: 0 10px 30px rgba(23,80,28,0.25);
   position: relative;
   overflow: hidden;
+  height: 52px !important;
+  border-radius: 999px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  padding: 0 28px !important;
 }
 
 .register-btn:hover {
@@ -427,7 +408,7 @@
 }
 
 .login-link {
-  color: rgb(29, 202, 29);
+  color: rgb(14, 95, 14);
   text-decoration: none;
   font-weight: 500;
   display: inline-flex;
@@ -555,7 +536,7 @@
   <div class="back-home">
     <a href="/" class="back-link">
       <i class="fas fa-arrow-left"></i>
-      <span>back to home</span>
+      <span>Back to Home</span>
     </a>
   </div>
 
@@ -574,8 +555,8 @@
               alt="PsiFi Logo"
               class="logo"
               /> 
-            <h1 class="signup-title">join PsiFi</h1>
-            <p class="signup-subtitle">create your account to get started</p>
+            <h1 class="signup-title">Join PsiFi</h1>
+            <p class="signup-subtitle">Create your account to get started</p>
           </div>
         </div>
 

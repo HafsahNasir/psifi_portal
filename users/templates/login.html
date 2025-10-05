@@ -9,6 +9,17 @@
     <div class="grid-overlay"></div>
     <div class="floating-accent accent-1"></div>
     <div class="floating-accent accent-2"></div>
+    <!-- Floating Orbs (from signup) -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+  </div>
+
+  <!-- Floating Particles -->
+  <div class="particles-container">
+    {% for i in "12345678901234567890" %}
+      <div class="particle particle-{{ forloop.counter }}"></div>
+    {% endfor %}
   </div>
 
   <!-- Main Login Card -->
@@ -54,12 +65,9 @@
                 placeholder="Enter your password"
                 value="{{ field.value|default:'' }}"
                 required
+                style="padding-right: 48px !important;"
               />
-              <button
-                type="button"
-                class="password-toggle"
-                onclick="togglePassword('{{ field.id_for_label }}')"
-              >
+              <button type="button" class="password-toggle" onclick="togglePassword('{{ field.id_for_label }}')">
                 <i class="fas fa-eye" id="eye-{{ field.id_for_label }}"></i>
               </button>
               {% else %}
@@ -126,7 +134,7 @@
   <div class="back-home">
     <a href="/" class="back-link">
       <i class="fas fa-arrow-left"></i>
-      <span>back to home</span>
+      <span>Back to home</span>
     </a>
   </div>
 
@@ -187,6 +195,74 @@
     background-size: clamp(50px, 10vw, 100px) clamp(50px, 10vw, 100px);
   }
 
+  /* Orbs + Particles (copied from signup) */
+  .background-elements { position: absolute; inset: 0; overflow: hidden; z-index: 1; pointer-events: none; }
+
+  .floating-orb { filter: blur(64px); opacity: 0.40; position: absolute; }
+  .orb-1 { width: 320px; height: 320px; background: radial-gradient(circle at 30% 30%, rgba(12,134,96,0.45), rgba(4,30,18,0.65)); top: -10%; left: -5%; }
+  .orb-2 { width: 420px; height: 420px; background: radial-gradient(circle at 70% 40%, rgba(24,160,80,0.45), rgba(3,18,10,0.65)); bottom: -15%; right: -10%; }
+  .orb-3 { width: 360px; height: 360px; background: radial-gradient(circle at 50% 50%, rgba(6,92,70,0.35), rgba(0,0,0,0.7)); top: 40%; right: 5%; }
+
+  .particles-container { position: absolute; inset: 0; overflow: hidden; z-index: 1; pointer-events: none; }
+  .particle { position: absolute; width: 6px; height: 6px; background: rgba(255,255,255,0.12); border-radius: 50%; animation: particleFloat 8s linear infinite; box-shadow: 0 0 8px rgba(255,255,255,0.15); }
+  .particle:nth-child(odd) { animation-duration: 6s; }
+  .particle:nth-child(even) { animation-duration: 10s; }
+  .particle-1 { left: 10%; animation-delay: 0s; }
+  .particle-2 { left: 20%; animation-delay: 1s; }
+  .particle-3 { left: 30%; animation-delay: 2s; }
+  .particle-4 { left: 40%; animation-delay: 3s; }
+  .particle-5 { left: 50%; animation-delay: 4s; }
+  .particle-6 { left: 60%; animation-delay: 5s; }
+  .particle-7 { left: 70%; animation-delay: 6s; }
+  .particle-8 { left: 80%; animation-delay: 7s; }
+  .particle-9 { left: 90%; animation-delay: 8s; }
+  .particle-10 { left: 15%; animation-delay: 9s; }
+  .particle-11 { left: 25%; animation-delay: 10s; }
+  .particle-12 { left: 35%; animation-delay: 11s; }
+  .particle-13 { left: 45%; animation-delay: 12s; }
+  .particle-14 { left: 55%; animation-delay: 13s; }
+  .particle-15 { left: 65%; animation-delay: 14s; }
+  .particle-16 { left: 75%; animation-delay: 15s; }
+  .particle-17 { left: 85%; animation-delay: 16s; }
+  .particle-18 { left: 95%; animation-delay: 17s; }
+  .particle-19 { left: 5%; animation-delay: 18s; }
+  .particle-20 { left: 95%; animation-delay: 19s; }
+
+  @keyframes particleFloat { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100px) rotate(360deg); opacity: 0; } }
+
+  /* Replace background image with gradient like signup */
+  .login-container {
+    background: linear-gradient(135deg, #000000 0%, #030a06 42%, #082015 70%, #0b3d1f 100%);
+    background-attachment: fixed;
+  }
+
+  /* Button style like register-btn */
+  .login-btn {
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, #17501C 0%, #003122 100%);
+    border: none;
+    border-radius: 999px;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(23,80,28,0.25);
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 28px;
+  }
+
+  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(34,140,34,0.35); }
+
+  /* Heading and text color tweaks to match signup */
+  .login-title { color: rgba(255,255,255,0.95); }
+  .login-subtitle { color: rgba(255,255,255,0.8); }
+
   .floating-accent {
     position: absolute;
     border-radius: 50%;
@@ -230,7 +306,8 @@
     border-radius: clamp(12px, 2vw, 16px);
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
     width: 100%;
-    max-width: min(440px, 90vw);
+    /* slightly larger max width for better balance on desktop */
+    max-width: min(520px, 92vw);
     position: relative;
     z-index: 2;
     overflow: hidden;
@@ -263,8 +340,9 @@
   }
 
   .logo-circle {
-    width: clamp(60px, 12vw, 80px);
-    height: clamp(60px, 12vw, 80px);
+    /* increased size: larger max and slightly larger preferred viewport percentage */
+    width: clamp(80px, 18vw, 140px);
+    height: clamp(80px, 18vw, 140px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -300,7 +378,7 @@
   }
 
   .signup-link {
-  color: rgb(29, 202, 29);
+  color:  rgb(25, 141, 25);
   text-decoration: none;
   font-weight: 500;
   display: inline-flex;
@@ -340,20 +418,21 @@
 
   .input-wrapper {
     position: relative;
+    display: block;
   }
+
 
   .form-input {
     width: 100%;
-    padding: clamp(0.8rem, 2.5vw, 1rem) clamp(1rem, 3vw, 1.25rem);
-    border: 1px solid rgba(34, 139, 34, 0.2);
-    border-radius: clamp(6px, 1.5vw, 8px);
-    font-size: clamp(0.9rem, 2.5vw, 1rem);
-    transition: all 0.3s ease;
+    height: 48px;
     background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(34, 139, 34, 0.2);
+    border-radius: 12px;
+    padding: 0 16px;
     color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
     backdrop-filter: blur(10px);
-    line-height: 1.4;
-    padding-right: clamp(3.5rem, 8vw, 3rem);
   }
 
   .form-input::placeholder {
@@ -367,28 +446,33 @@
     box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.2);
   }
 
+  /* Password Toggle */
   .password-toggle {
-    position: absolute;
-    right: clamp(0.75rem, 2vw, 1rem);
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    padding: clamp(0.5rem, 2vw, 0.25rem);
-    border-radius: 4px;
-    transition: color 0.3s ease;
-    font-size: clamp(1.3rem, 4vw, 1rem);
-    min-width: clamp(40px, 8vw, 24px);
-    min-height: clamp(40px, 8vw, 24px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute !important;
+    right: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: none !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    transition: color 0.3s ease !important;
+    z-index: 10 !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
   }
 
   .password-toggle:hover {
-    color: #228b22;
+    color: white !important;
+  }
+
+  .password-toggle:focus {
+    outline: none !important;
   }
 
   .field-errors {
@@ -409,31 +493,6 @@
     flex-shrink: 0;
   }
 
-  /* Submit Button */
-  .login-btn {
-    width: 100%;
-    background: rgb(30, 148, 30);
-    color: white;
-    border: none;
-    padding: clamp(0.8rem, 2.5vw, 1rem) clamp(1.5rem, 4vw, 2rem);
-    border-radius: clamp(6px, 1.5vw, 8px);
-    font-size: clamp(1rem, 2.5vw, 1.1rem);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(34, 139, 34, 0.3);
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(34, 140, 34, 0.4);
-  }
 
   .login-btn:active {
     transform: translateY(0);
@@ -628,13 +687,6 @@
       font-size: 1.1rem;
     }
 
-    .password-toggle {
-      font-size: 1.2rem;
-      min-width: 36px;
-      min-height: 36px;
-      padding: 0.5rem;
-    }
-
     .error-message i {
       font-size: 1rem;
     }
@@ -683,12 +735,7 @@
       font-size: 1.2rem;
     }
 
-    .password-toggle {
-      font-size: 1.3rem;
-      min-width: 40px;
-      min-height: 40px;
-      right: 0.75rem;
-    }
+
 
     .error-message i {
       font-size: 1.1rem;
@@ -702,9 +749,7 @@
       font-size: 1rem;
     }
 
-    .form-input {
-      padding-right: 3.5rem;
-    }
+
   }
 
   /* Very small screens */
@@ -715,19 +760,12 @@
 
     .form-input {
       font-size: 16px; /* Prevent zoom on iOS */
-      padding-right: 4rem;
     }
 
     /* Largest icons for very small screens */
     .form-label i {
       width: 24px;
       font-size: 1.3rem;
-    }
-
-    .password-toggle {
-      font-size: 1.4rem;
-      min-width: 44px;
-      min-height: 44px;
     }
 
     .error-message i {
