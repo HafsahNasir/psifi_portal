@@ -40,12 +40,15 @@ urlpatterns = [
     path('media/', views.media, name='media'),
     path('cad/', views.cadashboard, name='ca'),
     path('ca_login/', views.ca_login_view, name='calog'),
-    path('ca_signup/',views.casignup,name ='ca_signup'),
-    path('name-password-reset/', views.name_password_reset, name='name_password_reset'),
+    path('ca_signup/', views.casignup, name='ca_signup'),
+    path('name-password-reset/', views.name_password_reset,
+         name='name_password_reset'),
+    path('schedule/', views.schedule_view, name='schedule'),
 
 
 
-   
+
 ]
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
