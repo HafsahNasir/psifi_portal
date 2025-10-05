@@ -29,43 +29,6 @@
         color: white;
       }
 
-      /* Black background with subtle patterns */
-      .background {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          135deg,
-          #000000 0%,
-          #0a0a0a 50%,
-          #000000 100%
-        );
-        z-index: 1;
-      }
-
-      .background::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: radial-gradient(
-            circle at 25% 25%,
-            rgba(51, 204, 51, 0.03) 1px,
-            transparent 1px
-          ),
-          radial-gradient(
-            circle at 75% 75%,
-            rgba(0, 51, 0, 0.02) 1px,
-            transparent 1px
-          );
-        background-size: 50px 50px;
-        opacity: 0.8;
-      }
-
       /* Grid overlay */
       .grid-overlay {
         position: fixed;
@@ -73,14 +36,14 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: linear-gradient(
-            rgba(51, 204, 51, 0.03) 1px,
-            transparent 1px
-          ),
-          linear-gradient(90deg, rgba(51, 204, 51, 0.03) 1px, transparent 1px);
-        background-size: 100px 100px;
         z-index: 2;
         pointer-events: none;
+        background: url('../../static/images/psifi_bg.png');
+        background-size: cover;            /* fills entire screen */
+        background-position: center center; /* keeps the focus in the middle */
+        background-repeat: repeat-x;      /* prevent tiling */
+        background-attachment: fixed;      /* optional: gives a nice parallax-like effect */
+        background-color: black;   
       }
 
       /* Main overlay container */
@@ -171,6 +134,10 @@
         z-index: 11;
         max-width: 700px;
         padding: 2rem;
+        background: rgba(179, 255, 179, 0.043);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(24, 78, 18, 0.462);
+        border-radius: 24px;
         animation: fadeInUp 1s ease-out;
       }
 
@@ -295,13 +262,13 @@
       }
 
       .btn-primary {
-        background: linear-gradient(135deg, #33cc33, #003300);
+        background:  rgba(45, 172, 45, 0.677);
         border: none;
         box-shadow: 0 4px 15px rgba(51, 204, 51, 0.3);
       }
 
       .btn-primary:hover {
-        background: linear-gradient(135deg, #66ff66, #001303);
+        background: rgba(31, 238, 31, 0.616);
         transform: translateY(-2px) scale(1.02);
         box-shadow: 0 8px 25px rgba(51, 204, 51, 0.4);
       }
@@ -482,10 +449,10 @@
       {% endcomment %}
 
       <!-- Status Indicator -->
-      <div class="status-indicator">
+      <!-- <div class="status-indicator">
         <div class="status-dot"></div>
         <span>System Online</span>
-      </div>
+      </div> -->
 
       <div class="content">
         {% comment %}
@@ -519,29 +486,29 @@
 
     <script>
       // Enhanced entrance animation
-      document.addEventListener("DOMContentLoaded", function () {
-        const content = document.querySelector(".content");
-        const statusIndicator = document.querySelector(".status-indicator");
+      // document.addEventListener("DOMContentLoaded", function () {
+      //   const content = document.querySelector(".content");
+      //   const statusIndicator = document.querySelector(".status-indicator");
 
-        // Initial state
-        content.style.opacity = "0";
-        content.style.transform = "translateY(30px)";
-        statusIndicator.style.opacity = "0";
-        statusIndicator.style.transform = "translateY(-20px)";
+      //   // Initial state
+      //   content.style.opacity = "0";
+      //   content.style.transform = "translateY(30px)";
+      //   statusIndicator.style.opacity = "0";
+      //   statusIndicator.style.transform = "translateY(-20px)";
 
-        // Animate in sequence
-        setTimeout(() => {
-          statusIndicator.style.transition = "all 0.8s ease-out";
-          statusIndicator.style.opacity = "1";
-          statusIndicator.style.transform = "translateY(0)";
-        }, 300);
+      //   // Animate in sequence
+      //   setTimeout(() => {
+      //     statusIndicator.style.transition = "all 0.8s ease-out";
+      //     statusIndicator.style.opacity = "1";
+      //     statusIndicator.style.transform = "translateY(0)";
+      //   }, 300);
 
-        setTimeout(() => {
-          content.style.transition = "all 1s ease-out";
-          content.style.opacity = "1";
-          content.style.transform = "translateY(0)";
-        }, 600);
-      });
+      //   setTimeout(() => {
+      //     content.style.transition = "all 1s ease-out";
+      //     content.style.opacity = "1";
+      //     content.style.transform = "translateY(0)";
+      //   }, 600);
+      // });
 
       // Enhanced button interactions
       document.querySelectorAll(".btn").forEach((btn) => {
