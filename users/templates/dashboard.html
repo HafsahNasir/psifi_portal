@@ -1,18 +1,16 @@
-{% extends 'base1.html' %}
-{% load static %}
-
-{% block title %}Dashboard - LSS{% endblock %}
-
+{% extends 'base1.html' %} 
+{% load static %} 
+{% block title %}Dashboard - LSS{% endblock %} 
 {% block extra_css %}
 <style>
-/* Reset and Base Styles */
-* {
+  /* Reset and Base Styles */
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+  }
 
-.dashboard-page {
+  .dashboard-page {
     min-height: 100vh;
     min-height: calc(var(--vh, 1vh) * 100);
     background: #000000;
@@ -20,10 +18,10 @@
     font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
     position: relative;
     overflow-x: hidden;
-}
+  }
 
-/* Black Background with Brand Color Accents */
-.dashboard-bg {
+  /* Black Background with Brand Color Accents */
+  .dashboard-bg {
     position: fixed;
     top: 0;
     left: 0;
@@ -31,71 +29,80 @@
     height: 100%;
     background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
     z-index: 1;
-}
+  }
 
-.dashboard-bg::before {
-    content: '';
+  .dashboard-bg::before {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-        radial-gradient(circle at 25% 25%, rgba(173, 96, 224, 0.03) 1px, transparent 1px),
-        radial-gradient(circle at 75% 75%, rgba(96, 26, 92, 0.02) 1px, transparent 1px);
+    background-image: radial-gradient(
+        circle at 25% 25%,
+        rgba(51, 204, 51, 0.03) 1px,
+        transparent 1px
+      ),
+      radial-gradient(
+        circle at 75% 75%,
+        rgba(0, 51, 0, 0.02) 1px,
+        transparent 1px
+      );
     background-size: 50px 50px;
     opacity: 0.8;
-}
+  }
 
-/* Subtle Grid Overlay with Brand Colors */
-.grid-overlay {
+  /* Subtle Grid Overlay with Brand Colors */
+  .grid-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-        linear-gradient(rgba(173, 96, 224, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(173, 96, 224, 0.03) 1px, transparent 1px);
+    background-image: linear-gradient(
+        rgba(51, 204, 51, 0.03) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(51, 204, 51, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
     z-index: 2;
     pointer-events: none;
-}
+  }
 
-/* Main Content */
-.dashboard-content {
+  /* Main Content */
+  .dashboard-content {
     position: relative;
     z-index: 10;
     padding: 1rem 0;
     min-height: 100vh;
     min-height: calc(var(--vh, 1vh) * 100);
-}
+  }
 
-.container {
+  .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 1rem;
-}
+  }
 
-/* Header Section - Mobile First */
-.header-section {
+  /* Header Section - Mobile First */
+  .header-section {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     margin-bottom: 2rem;
     padding: 1.5rem 0;
-    border-bottom: 1px solid rgba(173, 96, 224, 0.2);
+    border-bottom: 1px solid rgba(51, 204, 51, 0.2);
     text-align: center;
-}
+  }
 
-.welcome-content {
+  .welcome-content {
     width: 100%;
-}
+  }
 
-.welcome-title {
+  .welcome-title {
     font-size: clamp(1.5rem, 4vw, 1.8rem);
     font-weight: 700;
-    background: linear-gradient(135deg, #ffffff, #ad60e0);
+    background: linear-gradient(135deg, #ffffff, #33cc33);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -103,24 +110,24 @@
     letter-spacing: -0.02em;
     line-height: 1.2;
     word-break: break-word;
-}
+  }
 
-.welcome-subtitle {
+  .welcome-subtitle {
     font-size: clamp(0.9rem, 2.5vw, 1rem);
-    color: rgba(173, 96, 224, 0.8);
+    color: rgba(51, 204, 51, 0.8);
     font-weight: 400;
     line-height: 1.4;
-}
+  }
 
-.header-actions {
+  .header-actions {
     display: flex;
     justify-content: center;
     width: 100%;
-}
+  }
 
-/* Primary Action Button - Enhanced for mobile */
-.primary-action {
-    background: linear-gradient(135deg, #ad60e0, #601a5c);
+  /* Primary Action Button - Enhanced for mobile */
+  .primary-action {
+    background: linear-gradient(135deg, #33cc33, #003300);
     border: none;
     border-radius: 12px;
     padding: 1rem 2rem;
@@ -135,55 +142,60 @@
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(173, 96, 224, 0.4);
+    box-shadow: 0 8px 25px rgba(51, 204, 51, 0.4);
     min-height: 56px;
     width: 100%;
     max-width: 280px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-}
+  }
 
-.primary-action i {
+  .primary-action i {
     font-size: clamp(1.1rem, 3vw, 1.2rem);
     flex-shrink: 0;
-}
+  }
 
-.primary-action::before {
-    content: '';
+  .primary-action::before {
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
     transition: left 0.5s ease;
-}
+  }
 
-.primary-action:hover::before {
+  .primary-action:hover::before {
     left: 100%;
-}
+  }
 
-.primary-action:hover {
+  .primary-action:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(173, 96, 224, 0.5);
+    box-shadow: 0 12px 35px rgba(51, 204, 51, 0.5);
     color: white;
     text-decoration: none;
-}
+  }
 
-.primary-action:active {
+  .primary-action:active {
     transform: translateY(-1px);
-}
+  }
 
-/* MOBILE FIRST - Single Column Layout */
-.nav-container {
+  /* MOBILE FIRST - Single Column Layout */
+  .nav-container {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     margin-bottom: 2rem;
     width: 100%;
-}
+  }
 
-.nav-card {
+  .nav-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -196,43 +208,48 @@
     min-height: 140px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-}
+  }
 
-.nav-card::before {
-    content: '';
+  .nav-card::before {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent-color),
+      transparent
+    );
     transform: scaleX(0);
     transition: transform 0.3s ease;
-}
+  }
 
-.nav-card:hover::before {
+  .nav-card:hover::before {
     transform: scaleX(1);
-}
+  }
 
-.nav-card:hover {
+  .nav-card:hover {
     transform: translateY(-5px);
-    background: rgba(173, 96, 224, 0.08);
-    border-color: rgba(173, 96, 224, 0.3);
-    box-shadow: 0 15px 40px rgba(173, 96, 224, 0.25);
-}
+    background: rgba(51, 204, 51, 0.08);
+    border-color: rgba(51, 204, 51, 0.3);
+    box-shadow: 0 15px 40px rgba(51, 204, 51, 0.25);
+  }
 
-.nav-card:active {
+  .nav-card:active {
     transform: translateY(-2px);
-}
+  }
 
-.card-header {
+  .card-header {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
     margin-bottom: 1rem;
-}
+  }
 
-.card-icon {
+  .card-icon {
     width: clamp(52px, 12vw, 56px);
     height: clamp(52px, 12vw, 56px);
     border-radius: 12px;
@@ -245,37 +262,37 @@
     border: 2px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     flex-shrink: 0;
-}
+  }
 
-.nav-card:hover .card-icon {
+  .nav-card:hover .card-icon {
     background: var(--accent-color);
     color: white;
     transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(173, 96, 224, 0.5);
-}
+    box-shadow: 0 0 25px rgba(51, 204, 51, 0.5);
+  }
 
-.card-content {
+  .card-content {
     flex: 1;
     min-width: 0;
-}
+  }
 
-.card-title {
+  .card-title {
     font-size: clamp(1.2rem, 3.5vw, 1.3rem);
     font-weight: 600;
     color: #ffffff;
     margin: 0 0 0.5rem 0;
     line-height: 1.2;
     word-break: break-word;
-}
+  }
 
-.card-description {
+  .card-description {
     color: rgba(255, 255, 255, 0.7);
     font-size: clamp(0.85rem, 2.2vw, 0.9rem);
     line-height: 1.5;
     margin-bottom: 1rem;
-}
+  }
 
-.card-action {
+  .card-action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -294,41 +311,51 @@
     max-width: 180px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-}
+  }
 
-.card-action i {
+  .card-action i {
     font-size: clamp(0.9rem, 2.5vw, 1rem);
     flex-shrink: 0;
-}
+  }
 
-.card-action:hover {
+  .card-action:hover {
     background: var(--accent-color);
     border-color: var(--accent-color);
     color: white;
     text-decoration: none;
     transform: translateX(5px);
-    box-shadow: 0 6px 20px rgba(173, 96, 224, 0.4);
-}
+    box-shadow: 0 6px 20px rgba(51, 204, 51, 0.4);
+  }
 
-.card-action:active {
+  .card-action:active {
     transform: translateX(2px);
-}
+  }
 
-/* Brand Color Variants */
-.card-website { --accent-color: #ad60e0; }
-.card-social { --accent-color: #d946ef; }
-.card-payment { --accent-color: #22c55e; }
-.card-categories { --accent-color: #601a5c; }
-.card-contact { --accent-color: #f59e0b; }
+  /* Brand Color Variants */
+  .card-website {
+    --accent-color: #33cc33;
+  }
+  .card-social {
+    --accent-color: #d946ef;
+  }
+  .card-payment {
+    --accent-color: #22c55e;
+  }
+  .card-categories {
+    --accent-color: #003300;
+  }
+  .card-contact {
+    --accent-color: #f59e0b;
+  }
 
-/* Footer Section */
-.footer-section {
+  /* Footer Section */
+  .footer-section {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2rem 0;
     text-align: center;
-}
+  }
 
-.logout-btn {
+  .logout-btn {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 12px;
@@ -347,578 +374,630 @@
     width: 100%;
     max-width: 220px;
     -webkit-tap-highlight-color: transparent;
-}
+  }
 
-.logout-btn i {
+  .logout-btn i {
     font-size: clamp(1.1rem, 3vw, 1.2rem);
     flex-shrink: 0;
-}
+  }
 
-.logout-btn:hover {
+  .logout-btn:hover {
     background: rgba(239, 68, 68, 0.2);
     border-color: #ef4444;
     color: #ef4444;
     text-decoration: none;
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-}
+  }
 
-.logout-btn:active {
+  .logout-btn:active {
     transform: translateY(0);
-}
+  }
 
-/* Floating Brand Elements - Minimal on mobile */
-.floating-accent {
+  /* Floating Brand Elements - Minimal on mobile */
+  .floating-accent {
     position: fixed;
     pointer-events: none;
     z-index: 3;
     opacity: 0.3;
-}
+  }
 
-.accent-1 {
+  .accent-1 {
     top: 20%;
     right: 5%;
     width: 60px;
     height: 60px;
-    background: radial-gradient(circle, rgba(173, 96, 224, 0.06), transparent);
+    background: radial-gradient(circle, rgba(51, 204, 51, 0.06), transparent);
     border-radius: 50%;
     animation: float-1 8s ease-in-out infinite;
-}
+  }
 
-.accent-2 {
+  .accent-2 {
     bottom: 30%;
     left: 5%;
     width: 50px;
     height: 50px;
-    background: radial-gradient(circle, rgba(96, 26, 92, 0.04), transparent);
+    background: radial-gradient(circle, rgba(0, 51, 0, 0.04), transparent);
     border-radius: 50%;
     animation: float-2 10s ease-in-out infinite;
-}
+  }
 
-/* Animations */
-@keyframes float-1 {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    33% { transform: translateY(-15px) rotate(120deg); }
-    66% { transform: translateY(8px) rotate(240deg); }
-}
+  /* Animations */
+  @keyframes float-1 {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-15px) rotate(120deg);
+    }
+    66% {
+      transform: translateY(8px) rotate(240deg);
+    }
+  }
 
-@keyframes float-2 {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(180deg); }
-}
+  @keyframes float-2 {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(180deg);
+    }
+  }
 
-@keyframes fadeInUp {
+  @keyframes fadeInUp {
     from {
-        opacity: 0;
-        transform: translateY(30px);
+      opacity: 0;
+      transform: translateY(30px);
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
+  }
 
-.fade-in {
+  .fade-in {
     animation: fadeInUp 0.6s ease-out forwards;
-}
+  }
 
-/* Loading States */
-.loading-shimmer {
-    background: linear-gradient(90deg, 
-        rgba(173, 96, 224, 0.05) 25%, 
-        rgba(173, 96, 224, 0.15) 50%, 
-        rgba(173, 96, 224, 0.05) 75%
+  /* Loading States */
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(51, 204, 51, 0.05) 25%,
+      rgba(51, 204, 51, 0.15) 50%,
+      rgba(51, 204, 51, 0.05) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
-}
+  }
 
-@keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
 
-/* TABLET AND DESKTOP - 768px and up */
-@media (min-width: 768px) {
+  /* TABLET AND DESKTOP - 768px and up */
+  @media (min-width: 768px) {
     .dashboard-content {
-        padding: 2rem 0;
+      padding: 2rem 0;
     }
 
     .container {
-        padding: 0 2rem;
+      padding: 0 2rem;
     }
 
     .header-section {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        text-align: left;
-        margin-bottom: 3rem;
-        padding: 2rem 0;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+      margin-bottom: 3rem;
+      padding: 2rem 0;
     }
 
     .welcome-content {
-        flex: 1;
+      flex: 1;
     }
 
     .welcome-title {
-        font-size: 2.5rem;
+      font-size: 2.5rem;
     }
 
     .welcome-subtitle {
-        font-size: 1.1rem;
+      font-size: 1.1rem;
     }
 
     .header-actions {
-        justify-content: flex-end;
-        width: auto;
+      justify-content: flex-end;
+      width: auto;
     }
 
     .primary-action {
-        width: auto;
-        max-width: none;
+      width: auto;
+      max-width: none;
     }
 
     /* DESKTOP: 2x2 Grid Layout */
     .nav-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto;
-        gap: 1.5rem;
-        max-width: 1000px;
-        margin: 0 auto 3rem auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto 3rem auto;
     }
 
     .nav-card {
-        min-height: 200px;
-        padding: 2rem;
+      min-height: 200px;
+      padding: 2rem;
     }
 
     .card-header {
-        flex-direction: column;
-        text-align: left;
-        align-items: flex-start;
-        gap: 1rem;
-        margin-bottom: 1.25rem;
+      flex-direction: column;
+      text-align: left;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     .card-icon {
-        width: 64px;
-        height: 64px;
-        font-size: 2rem;
+      width: 64px;
+      height: 64px;
+      font-size: 2rem;
     }
 
     .card-title {
-        font-size: 1.5rem;
+      font-size: 1.5rem;
     }
 
     .card-description {
-        font-size: 1rem;
+      font-size: 1rem;
     }
 
     .card-action {
-        width: auto;
-        max-width: none;
+      width: auto;
+      max-width: none;
     }
 
     .logout-btn {
-        width: auto;
-        max-width: none;
+      width: auto;
+      max-width: none;
     }
 
     .floating-accent {
-        opacity: 0.6;
+      opacity: 0.6;
     }
 
     .accent-1 {
-        width: 100px;
-        height: 100px;
-        top: 10%;
-        right: 10%;
+      width: 100px;
+      height: 100px;
+      top: 10%;
+      right: 10%;
     }
 
     .accent-2 {
-        width: 80px;
-        height: 80px;
-        bottom: 20%;
-        left: 15%;
+      width: 80px;
+      height: 80px;
+      bottom: 20%;
+      left: 15%;
     }
-}
+  }
 
-/* Large Desktop */
-@media (min-width: 1200px) {
+  /* Large Desktop */
+  @media (min-width: 1200px) {
     .nav-container {
-        gap: 2rem;
-        max-width: 1200px;
+      gap: 2rem;
+      max-width: 1200px;
     }
 
     .nav-card {
-        min-height: 220px;
-        padding: 2.5rem;
+      min-height: 220px;
+      padding: 2.5rem;
     }
-}
+  }
 
-/* Very Small Mobile Screens */
-@media (max-width: 480px) {
+  /* Very Small Mobile Screens */
+  @media (max-width: 480px) {
     .container {
-        padding: 0 0.75rem;
+      padding: 0 0.75rem;
     }
 
     .nav-card {
-        padding: 1.25rem;
-        min-height: 120px;
+      padding: 1.25rem;
+      min-height: 120px;
     }
 
     .card-header {
-        gap: 0.75rem;
+      gap: 0.75rem;
     }
-}
+  }
 
-/* Mobile Landscape */
-@media (max-height: 600px) and (orientation: landscape) {
+  /* Mobile Landscape */
+  @media (max-height: 600px) and (orientation: landscape) {
     .dashboard-content {
-        padding: 1rem 0;
+      padding: 1rem 0;
     }
 
     .header-section {
-        margin-bottom: 1.5rem;
-        padding: 1rem 0;
+      margin-bottom: 1.5rem;
+      padding: 1rem 0;
     }
 
     .nav-container {
-        gap: 1rem;
+      gap: 1rem;
     }
 
     .nav-card {
-        padding: 1rem;
-        min-height: 100px;
+      padding: 1rem;
+      min-height: 100px;
     }
 
     .floating-accent {
-        display: none;
+      display: none;
     }
-}
+  }
 
-/* Touch Device Optimizations */
-@media (hover: none) and (pointer: coarse) {
+  /* Touch Device Optimizations */
+  @media (hover: none) and (pointer: coarse) {
     .nav-card:hover {
-        transform: none;
+      transform: none;
     }
 
     .nav-card:active {
-        transform: scale(0.98);
-        background: rgba(173, 96, 224, 0.1);
+      transform: scale(0.98);
+      background: rgba(51, 204, 51, 0.1);
     }
 
     .card-action:hover {
-        transform: none;
+      transform: none;
     }
 
     .card-action:active {
-        transform: scale(0.95);
+      transform: scale(0.95);
     }
 
     .primary-action:hover {
-        transform: none;
+      transform: none;
     }
 
     .primary-action:active {
-        transform: scale(0.98);
+      transform: scale(0.98);
     }
 
     .logout-btn:hover {
-        transform: none;
+      transform: none;
     }
 
     .logout-btn:active {
-        transform: scale(0.98);
+      transform: scale(0.98);
     }
-}
+  }
 
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
     .floating-accent,
     .fade-in {
-        animation: none;
+      animation: none;
     }
 
     * {
-        transition-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
     }
-}
+  }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
     .nav-card {
-        border-width: 2px;
+      border-width: 2px;
     }
-    
+
     .primary-action,
     .card-action,
     .logout-btn {
-        border: 2px solid transparent;
+      border: 2px solid transparent;
     }
-}
+  }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
     width: 6px;
-}
+  }
 
-::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     background: #000000;
-}
+  }
 
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #ad60e0, #601a5c);
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #33cc33, #003300);
     border-radius: 3px;
-}
+  }
 
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #c084ea, #7a2470);
-}
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #66ff66, #003300);
+  }
 
-/* Selection Colors */
-::selection {
-    background: rgba(173, 96, 224, 0.3);
+  /* Selection Colors */
+  ::selection {
+    background: rgba(51, 204, 51, 0.3);
     color: white;
-}
+  }
 
-::-moz-selection {
-    background: rgba(173, 96, 224, 0.3);
+  ::-moz-selection {
+    background: rgba(51, 204, 51, 0.3);
     color: white;
-}
+  }
 
-/* Ripple effect styles */
-@keyframes ripple {
+  /* Ripple effect styles */
+  @keyframes ripple {
     to {
-        transform: scale(3);
-        opacity: 0;
+      transform: scale(3);
+      opacity: 0;
     }
-}
+  }
 
-.ripple-effect {
+  .ripple-effect {
     position: relative;
     overflow: hidden;
-}
+  }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="dashboard-page">
-    <!-- Background -->
-    <div class="dashboard-bg"></div>
-    <div class="grid-overlay"></div>
+  <!-- Background -->
+  <div class="dashboard-bg"></div>
+  <div class="grid-overlay"></div>
 
-    <!-- Floating Brand Elements -->
-    <div class="floating-accent accent-1"></div>
-    <div class="floating-accent accent-2"></div>
+  <!-- Floating Brand Elements -->
+  <div class="floating-accent accent-1"></div>
+  <div class="floating-accent accent-2"></div>
 
-    <!-- Main Content -->
-    <div class="dashboard-content">
-        <div class="container">
-            <!-- Header Section -->
-            <div class="header-section fade-in">
-                <div class="welcome-content">
-                    <h1 class="welcome-title">Welcome back, {{ request.user.username }}</h1>
-                    <p class="welcome-subtitle">LSS Dashboard - Manage your competition journey</p>
-                </div>
-                <div class="header-actions">
-                    {% if has_registration %}
-                        <a href="{% url 'team_detail' reg.id %}" class="primary-action">
-                            <i class="fas fa-users"></i>
-                            <span>View Team Details</span>
-                           
-                        </a>
-                    {% else %}
-                        <a href="{% url 'register_page' %}" class="primary-action">
-                            <i class="fas fa-plus"></i>
-                            <span>Register Now</span>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Navigation Cards -->
-            <div class="nav-container">
-
-                <!-- Card 1: Official Website -->
-                <div class="nav-card card-website fade-in">
-                    <div class="card-header">
-                        <div class="card-icon"><i class="fas fa-globe"></i></div>
-                        <div class="card-content">
-                            <h3 class="card-title">Official Website</h3>
-                            <p class="card-description">Explore our main platform to discover more about our initiatives, upcoming events, and resources.</p>
-                            <a href="https://spades.lums.edu.pk/" class="card-action" target="_blank" rel="noopener">
-                                <span>Visit Website</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Card 2: Instagram -->
-                <div class="nav-card card-social fade-in">
-                    <div class="card-header">
-                        <div class="card-icon"><i class="fab fa-instagram"></i></div>
-                        <div class="card-content">
-                            <h3 class="card-title">Instagram</h3>
-                            <p class="card-description">Stay connected, get behind-the-scenes content, and never miss announcements.</p>
-                            <a href="https://www.instagram.com/lss_spades/" class="card-action" target="_blank" rel="noopener">
-                                <span>Follow Us</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Card 3: Event Schedule -->
-                <div class="nav-card card-contact fade-in">
-                    <div class="card-header">
-                        <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
-                        <div class="card-content">
-                            <h3 class="card-title">Event Schedule</h3>
-                            <p class="card-description">Schedule for the event.</p>
-                            <a href="{% url 'media' %}" class="card-action">
-                                <span>View Schedule</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Card 4: Categories -->
-                <div class="nav-card card-categories fade-in">
-                    <div class="card-header">
-                        <div class="card-icon"><i class="fas fa-th-large"></i></div>
-                        <div class="card-content">
-                            <h3 class="card-title">Categories</h3>
-                            <p class="card-description">Browse competition categories, explore event types, and find your perfect match.</p>
-                            <a href="{% url 'categories' %}" class="card-action">
-                                <span>View Categories</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Card 5: Payment Status -->
-                <div class="nav-card card-payment fade-in">
-                    <div class="card-header">
-                        <div class="card-icon"><i class="fas fa-credit-card"></i></div>
-                        <div class="card-content">
-                            <h3 class="card-title">Payment Status</h3>
-                            <p class="card-description">Monitor your payment status, download receipts, and manage your financials securely.</p>
-                            <a href="{% url 'payment_voucher' %}" class="card-action">
-                                <span>Check Status</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Card 6: Contact Support -->
-                <div class="nav-card card-contact fade-in">
-                    <div class="card-header">
-                        <div class="card-icon"><i class="fas fa-headset"></i></div>
-                        <div class="card-content">
-                            <h3 class="card-title">Contact Support</h3>
-                            <p class="card-description">Get support from our team, submit inquiries, and get help for any concerns.</p>
-                            <a href="{% url 'contact' %}" class="card-action">
-                                <span>Contact Us</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Card 7: Campus Ambassador -->
-                <div class="nav-card card-contact fade-in">
-                    <div class="card-header">
-                        <div class="card-icon"><i class="fas fa-percent"></i></div>
-                        <div class="card-content">
-                            <h3 class="card-title">Campus Ambassador</h3>
-                            <p class="card-description">Sign up here or log in to be part of LSS as a Campus Ambassador</p>
-                            <a href="{% url 'calog' %}" class="card-action">
-                                <span>View Details</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            
-            </div>
-            
-
-            <!-- Footer Section -->
-            <div class="footer-section fade-in">
-                <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Sign Out</span>
-                    </button>
-                </form>
-            </div>
+  <!-- Main Content -->
+  <div class="dashboard-content">
+    <div class="container">
+      <!-- Header Section -->
+      <div class="header-section fade-in">
+        <div class="welcome-content">
+          <h1 class="welcome-title">
+            Welcome back, {{ request.user.username }}
+          </h1>
+          <p class="welcome-subtitle">
+            LSS Dashboard - Manage your competition journey
+          </p>
         </div>
-    </div>
-</div>
-{% endblock %}
+        <div class="header-actions">
+          {% if has_registration %}
+          <a href="{% url 'team_detail' reg.id %}" class="primary-action">
+            <i class="fas fa-users"></i>
+            <span>View Team Details</span>
+          </a>
+          {% else %}
+          <a href="{% url 'register_page' %}" class="primary-action">
+            <i class="fas fa-plus"></i>
+            <span>Register Now</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
 
-{% block extra_js %}
+      <!-- Navigation Cards -->
+      <div class="nav-container">
+        <!-- Card 1: Official Website -->
+        <div class="nav-card card-website fade-in">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-globe"></i></div>
+            <div class="card-content">
+              <h3 class="card-title">Official Website</h3>
+              <p class="card-description">
+                Explore our main platform to discover more about our
+                initiatives, upcoming events, and resources.
+              </p>
+              <a
+                href="https://spades.lums.edu.pk/"
+                class="card-action"
+                target="_blank"
+                rel="noopener"
+              >
+                <span>Visit Website</span>
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Instagram -->
+        <div class="nav-card card-social fade-in">
+          <div class="card-header">
+            <div class="card-icon"><i class="fab fa-instagram"></i></div>
+            <div class="card-content">
+              <h3 class="card-title">Instagram</h3>
+              <p class="card-description">
+                Stay connected, get behind-the-scenes content, and never miss
+                announcements.
+              </p>
+              <a
+                href="https://www.instagram.com/lss_spades/"
+                class="card-action"
+                target="_blank"
+                rel="noopener"
+              >
+                <span>Follow Us</span>
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Event Schedule -->
+        <div class="nav-card card-contact fade-in">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+            <div class="card-content">
+              <h3 class="card-title">Event Schedule</h3>
+              <p class="card-description">Schedule for the event.</p>
+              <a href="{% url 'media' %}" class="card-action">
+                <span>View Schedule</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Categories -->
+        <div class="nav-card card-categories fade-in">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-th-large"></i></div>
+            <div class="card-content">
+              <h3 class="card-title">Categories</h3>
+              <p class="card-description">
+                Browse competition categories, explore event types, and find
+                your perfect match.
+              </p>
+              <a href="{% url 'categories' %}" class="card-action">
+                <span>View Categories</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Payment Status -->
+        <div class="nav-card card-payment fade-in">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-credit-card"></i></div>
+            <div class="card-content">
+              <h3 class="card-title">Payment Status</h3>
+              <p class="card-description">
+                Monitor your payment status, download receipts, and manage your
+                financials securely.
+              </p>
+              <a href="{% url 'payment_voucher' %}" class="card-action">
+                <span>Check Status</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Contact Support -->
+        <div class="nav-card card-contact fade-in">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-headset"></i></div>
+            <div class="card-content">
+              <h3 class="card-title">Contact Support</h3>
+              <p class="card-description">
+                Get support from our team, submit inquiries, and get help for
+                any concerns.
+              </p>
+              <a href="{% url 'contact' %}" class="card-action">
+                <span>Contact Us</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7: Campus Ambassador -->
+        <div class="nav-card card-contact fade-in">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-percent"></i></div>
+            <div class="card-content">
+              <h3 class="card-title">Campus Ambassador</h3>
+              <p class="card-description">
+                Sign up here or log in to be part of LSS as a Campus Ambassador
+              </p>
+              <a href="{% url 'calog' %}" class="card-action">
+                <span>View Details</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Section -->
+      <div class="footer-section fade-in">
+        <form action="{% url 'logout' %}" method="post" style="display: inline">
+          {% csrf_token %}
+          <button type="submit" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sign Out</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener("DOMContentLoaded", function () {
     // Viewport height adjustment for mobile browsers
     function setViewportHeight() {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
     }
 
     setViewportHeight();
-    window.addEventListener('resize', setViewportHeight);
-    window.addEventListener('orientationchange', () => {
-        setTimeout(setViewportHeight, 100);
+    window.addEventListener("resize", setViewportHeight);
+    window.addEventListener("orientationchange", () => {
+      setTimeout(setViewportHeight, 100);
     });
 
     // Staggered fade-in animation
-    const fadeElements = document.querySelectorAll('.fade-in');
+    const fadeElements = document.querySelectorAll(".fade-in");
     fadeElements.forEach((element, index) => {
-        element.style.animationDelay = `${index * 0.15}s`;
+      element.style.animationDelay = `${index * 0.15}s`;
     });
 
     // Enhanced touch interactions for mobile
-    const interactiveElements = document.querySelectorAll('.nav-card, .card-action, .primary-action, .logout-btn');
+    const interactiveElements = document.querySelectorAll(
+      ".nav-card, .card-action, .primary-action, .logout-btn"
+    );
 
-    interactiveElements.forEach(element => {
-        // Touch feedback
-        element.addEventListener('touchstart', function(e) {
-            this.style.transform = 'scale(0.98)';
-            this.style.transition = 'transform 0.1s ease';
-        }, { passive: true });
+    interactiveElements.forEach((element) => {
+      // Touch feedback
+      element.addEventListener(
+        "touchstart",
+        function (e) {
+          this.style.transform = "scale(0.98)";
+          this.style.transition = "transform 0.1s ease";
+        },
+        { passive: true }
+      );
 
-        element.addEventListener('touchend', function(e) {
-            this.style.transform = 'scale(1)';
-            setTimeout(() => {
-                this.style.transition = 'all 0.3s ease';
-            }, 100);
-        }, { passive: true });
+      element.addEventListener(
+        "touchend",
+        function (e) {
+          this.style.transform = "scale(1)";
+          setTimeout(() => {
+            this.style.transition = "all 0.3s ease";
+          }, 100);
+        },
+        { passive: true }
+      );
 
-        // Ripple effect for touch
-        element.addEventListener('touchstart', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left - size / 2;
-            const y = touch.clientY - rect.top - size / 2;
+      // Ripple effect for touch
+      element.addEventListener(
+        "touchstart",
+        function (e) {
+          const ripple = document.createElement("span");
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const touch = e.touches[0];
+          const x = touch.clientX - rect.left - size / 2;
+          const y = touch.clientY - rect.top - size / 2;
 
-            ripple.style.cssText = `
+          ripple.style.cssText = `
                 position: absolute;
                 width: ${size}px;
                 height: ${size}px;
                 left: ${x}px;
                 top: ${y}px;
-                background: rgba(173, 96, 224, 0.3);
+                background: rgba(51, 204, 51, 0.3);
                 border-radius: 50%;
                 transform: scale(0);
                 animation: ripple 0.6s ease-out;
@@ -926,66 +1005,75 @@ document.addEventListener('DOMContentLoaded', function() {
                 z-index: 1000;
             `;
 
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
+          this.style.position = "relative";
+          this.style.overflow = "hidden";
+          this.appendChild(ripple);
 
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        }, { passive: true });
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        },
+        { passive: true }
+      );
     });
 
     // Loading states for external links
-    document.querySelectorAll('a[target="_blank"]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            this.classList.add('loading-shimmer');
-            this.style.pointerEvents = 'none';
-            setTimeout(() => {
-                this.classList.remove('loading-shimmer');
-                this.style.pointerEvents = 'auto';
-            }, 1500);
-        });
+    document.querySelectorAll('a[target="_blank"]').forEach((link) => {
+      link.addEventListener("click", function (e) {
+        this.classList.add("loading-shimmer");
+        this.style.pointerEvents = "none";
+        setTimeout(() => {
+          this.classList.remove("loading-shimmer");
+          this.style.pointerEvents = "auto";
+        }, 1500);
+      });
     });
 
     // Intersection Observer for scroll animations
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -20px 0px'
+      threshold: 0.1,
+      rootMargin: "0px 0px -20px 0px",
     };
 
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
     }, observerOptions);
 
     // Observe cards for scroll animations
-    document.querySelectorAll('.nav-card').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
+    document.querySelectorAll(".nav-card").forEach((card) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+      card.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+      observer.observe(card);
     });
 
     // Prevent double-tap zoom on iOS
     let lastTouchEnd = 0;
-    document.addEventListener('touchend', function (event) {
-        const now = (new Date()).getTime();
+    document.addEventListener(
+      "touchend",
+      function (event) {
+        const now = new Date().getTime();
         if (now - lastTouchEnd <= 300) {
-            event.preventDefault();
+          event.preventDefault();
         }
         lastTouchEnd = now;
-    }, false);
+      },
+      false
+    );
 
     // Smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-});
+    document.documentElement.style.scrollBehavior = "smooth";
+  });
 </script>
 
 <!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
 {% endblock %}
