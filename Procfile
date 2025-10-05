@@ -1,1 +1,1 @@
-web: gunicorn  lss_portal.wsgi
+web: gunicorn  psifi_portal.wsgi
