@@ -194,16 +194,12 @@
       .logo {
         max-width: 200px;
         height: auto;
-        border-radius: 20px;
-        box-shadow: 0 25px 50px rgba(51, 204, 51, 0.3);
-        transition: transform 0.3s ease;
-        border: 2px solid rgba(51, 204, 51, 0.2);
+        transition: all 0.3s ease;
       }
 
       .logo:hover {
         transform: scale(1.05);
-        box-shadow: 0 30px 60px rgba(51, 204, 51, 0.4);
-        border-color: rgba(51, 204, 51, 0.4);
+        filter: drop-shadow(0 5px 15px rgba(51, 204, 51, 0.4));
       }
 
       @keyframes logoFloat {
@@ -481,7 +477,9 @@
     </div>
 
     <div class="overlay">
+      {% comment %}
       <div class="central-glow"></div>
+      {% endcomment %}
 
       <!-- Status Indicator -->
       <div class="status-indicator">
@@ -490,18 +488,20 @@
       </div>
 
       <div class="content">
-        <div class="logo-container">
-          <img
-            src="{% static 'images/logo_psifi.png' %}"
-            alt="PsiFi Logo"
-            class="logo"
-          />
-        </div>
+        {% comment %}
+        <div class="logo-container"></div>
+        {% endcomment %}
+        <img
+          src="{% static 'images/logo_psifi.png' %}"
+          alt="PsiFi Logo"
+          class="logo"
+        />
 
-        <h1 class="main-title">Welcome to<br/>PsiFi XVII</h1>
+        <h1 class="main-title">Welcome to<br />PsiFi XVII</h1>
         <p class="subtitle">
-        Join PsiFi XVII, Pakistan’s biggest student-run science Olympiad at LUMS.
-        Experience four unforgettable days of creativity, competition, and community.
+          Join PsiFi XVII, Pakistan’s biggest student-run science Olympiad at
+          LUMS. Experience four unforgettable days of creativity, competition,
+          and community.
         </p>
 
         <div class="btn-container">

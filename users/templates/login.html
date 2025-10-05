@@ -1,6 +1,6 @@
-{% extends 'base.html' %} 
-{% block title %}Login - LSS{% endblock %} 
-{% block content %}
+{% extends 'base.html' %} {% block title %}Login - LSS{% endblock %} 
+{%block content %} {% load static %}
+
 <div class="login-container">
   <!-- Background Elements -->
   <div class="background-elements">
@@ -14,9 +14,11 @@
     <!-- Header Section -->
     <div class="login-header">
       <div class="logo-section">
-        <div class="logo-circle">
-          <span class="logo-text">Ψ</span>
-        </div>
+           <img
+          src="{% static 'images/logo_psifi.png' %}"
+          alt="PsiFi Logo"
+          class="logo-circle"
+        />
         <h2 class="login-title">Welcome Back</h2>
         <p class="login-subtitle">Sign in to your LSS account</p>
       </div>
@@ -208,7 +210,7 @@
 
   /* Main Login Card */
   .login-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(51, 204, 51, 0.3);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(34, 139, 34, 0.15);
     border-radius: clamp(12px, 2vw, 16px);
@@ -234,7 +236,7 @@
 
   /* Header Section */
   .login-header {
-    background: linear-gradient(135deg, #228b22, #006400);
+    background: rgba(51, 204, 51, 0.3);
     padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2rem)
       clamp(1.5rem, 4vw, 2rem);
     text-align: center;
@@ -271,15 +273,10 @@
   .logo-circle {
     width: clamp(60px, 12vw, 80px);
     height: clamp(60px, 12vw, 80px);
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto clamp(1rem, 3vw, 1.5rem);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   }
 
   .logo-text {
@@ -409,7 +406,7 @@
   /* Submit Button */
   .login-btn {
     width: 100%;
-    background: linear-gradient(135deg, #228b22, #006400);
+    background: rgba(51, 204, 51, 0.3);
     color: white;
     border: none;
     padding: clamp(0.8rem, 2.5vw, 1rem) clamp(1.5rem, 4vw, 2rem);
