@@ -134,7 +134,7 @@ body {
     gap: 1rem;
     margin-bottom: 2rem;
     padding: 1.5rem 0;
-    border-bottom: 1px solid rgba(173, 96, 224, 0.2);
+    border-bottom: 1px solid rgba(51, 204, 51, 0.4);
 }
 
 .back-button {
@@ -143,10 +143,10 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.25rem;
-    background: rgba(173, 96, 224, 0.1);
-    border: 1px solid rgba(173, 96, 224, 0.3);
+    background: rgba(51, 204, 51, 0.1);
+    border: 1px solid rgba(51, 204, 51, 0.4);
     border-radius: 10px;
-    color: #ad60e0;
+    color: rgba(51, 204, 51, 0.8);
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -157,9 +157,9 @@ body {
 }
 
 .back-button:hover {
-    background: rgba(173, 96, 224, 0.2);
-    border-color: #ad60e0;
-    color: #ad60e0;
+    background: rgba(51, 204, 51, 0.4);
+    border-color: rgba(51, 204, 51, 0.4);
+    color: #ffffff;
     text-decoration: none;
     transform: translateX(-3px);
 }
@@ -180,7 +180,7 @@ body {
 .page-title {
     font-size: clamp(1.8rem, 5vw, 2.8rem);
     font-weight: 700;
-    background: linear-gradient(135deg, #ffffff, #ad60e0);
+    background: linear-gradient(135deg, #ffffff);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -192,7 +192,7 @@ body {
 
 .page-subtitle {
     font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-    color: rgba(173, 96, 224, 0.8);
+    color: rgba(51, 204, 51, 0.8);
     font-weight: 400;
     line-height: 1.4;
 }
@@ -203,7 +203,7 @@ body {
     flex-direction: column;
     gap: 1.5rem;
     margin-bottom: 2rem;
-    max-width: 800px;
+    max-width: 1100px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -238,7 +238,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(173, 96, 224, 0.05), rgba(96, 26, 92, 0.03));
+    background: linear-gradient(135deg, rgba(51, 204, 51, 0.1), rgba(51, 204, 51, 0.2));
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: -1;
@@ -250,8 +250,8 @@ body {
 
 .category-button:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(173, 96, 224, 0.25);
-    border-color: rgba(173, 96, 224, 0.3);
+    box-shadow: 0 20px 40px rgba(51, 204, 51, 0.2);
+    border-color: rgba(51, 204, 51, 0.4);
     text-decoration: none;
     color: inherit;
 }
@@ -264,7 +264,7 @@ body {
 .category-icon {
     width: clamp(3.5rem, 8vw, 4rem);
     height: clamp(3.5rem, 8vw, 4rem);
-    background: linear-gradient(135deg, #ad60e0, #601a5c);
+    background: rgba(51, 204, 51, 0.4);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -272,14 +272,14 @@ body {
     font-size: clamp(1.8rem, 4vw, 2rem);
     color: white;
     margin: 0 auto 1.5rem;
-    box-shadow: 0 8px 25px rgba(173, 96, 224, 0.3);
+    box-shadow: 0 8px 25px rgba(51, 204, 51, 0.3);
     transition: all 0.3s ease;
     flex-shrink: 0;
 }
 
 .category-button:hover .category-icon {
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 12px 35px rgba(173, 96, 224, 0.4);
+    box-shadow: 0 12px 35px rgba(51, 204, 51, 0.4);
 }
 
 /* Category Name */
@@ -313,7 +313,7 @@ body {
     height: 2.5rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    color: #ad60e0;
+    color: rgba(51, 204, 51, 0.4);
     font-size: 1rem;
     transition: all 0.3s ease;
     margin: 0 auto;
@@ -323,7 +323,7 @@ body {
 .category-button:hover .category-arrow {
     background: rgba(173, 96, 224, 0.2);
     transform: translateX(5px);
-    box-shadow: 0 4px 15px rgba(173, 96, 224, 0.3);
+    box-shadow: 0 4px 15px rgba(51, 204, 51, 0.1);
 }
 
 /* Floating Accent Animations */
@@ -584,47 +584,155 @@ body {
         <div class="container">
             <!-- Header Section -->
             <div class="header-section fade-in">
-                <a href="/dashboard/" class="back-button">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Back to Dashboard</span>
-                </a>
                 <div class="page-header">
                     <h1 class="page-title">Study Categories</h1>
                     <p class="page-subtitle">Choose your area of interest to explore</p>
                 </div>
+                <a href="/dashboard/" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Dashboard</span>
+                </a>
             </div>
 
             <!-- Categories Grid -->
             <div class="categories-grid">
-                <!-- AI/ML Category -->
                 <a href="/media/aiml.pdf" class="category-button fade-in" target="_blank" rel="noopener">
                     <div class="category-icon"><i class="fas fa-brain"></i></div>
-                    <h3 class="category-name">AI/ML</h3>
-                    <p class="category-description">Master artificial intelligence and machine learning fundamentals</p>
+                    <h3 class="category-name">SCIENCE CRIME BUSTERS</h3>
+                    <p class="category-description">SCB is a forensic science event that transforms participants
+                        into crime scene investigators. Through a series of escalating
+                        rounds: including blood analysis, dental forensics, and case
+                        building. Teams work to unravel a carefully crafted mystery.
+                        With each clue, the investigation deepens, offering an
+                        immersive experience that blends scientific reasoning with
+                        deductive logic.</p>
                     <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- Life Sciences Category -->
                 <a href="/media/life.pdf" class="category-button fade-in" target="_blank" rel="noopener">
                     <div class="category-icon"><i class="fas fa-dna"></i></div>
-                    <h3 class="category-name">Life Sciences</h3>
-                    <p class="category-description">Explore biology, genetics, and biotechnology concepts</p>
+                    <h3 class="category-name">SIEGE</h3>
+                    <p class="category-description">Siege is PsiFi’s ultimate engineering showdown, where
+                        participants design and build structures like bridges, gliders,
+                        and catapults using limited materials. Spanning three rounds,
+                        the event tests creativity, structural integrity, and precision
+                        under constraints. With each build, teams compete to
+                        combine practical engineering with innovative problem-
+                        solving in a high-stakes, hands-on environment.</p>
                     <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- Quantum Computing Category -->
                 <a href="/media/quantum.pdf" class="category-button fade-in" target="_blank" rel="noopener">
                     <div class="category-icon"><i class="fas fa-atom"></i></div>
-                    <h3 class="category-name">Quantum Computing</h3>
-                    <p class="category-description">Dive into quantum mechanics and quantum algorithms</p>
+                    <h3 class="category-name">RC PLANES</h3>
+                    <p class="category-description">Participants will design, build, and fly their own remote-
+                        controlled aircraft, pushing the limits of aerodynamics and
+                        control. From lift-off to landing, it'
+                        s a test of skill, precision,
+                        and creativity. While our classic categories like Robowars
+                        continue to empower and inspire, the RC Plane competition
+                        opens a whole new runway for tech enthusiasts ready to soar.</p>
                     <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- Autonomous Systems Category -->
                 <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
                     <div class="category-icon"><i class="fas fa-robot"></i></div>
-                    <h3 class="category-name">Autonomous Systems</h3>
-                    <p class="category-description">Learn robotics, control systems, and autonomous navigation</p>
+                    <h3 class="category-name">SCIFINITY</h3>
+                    <p class="category-description">Scifinity is a fandom-based science event that blends pop
+                        culture with debate, creativity, and problem-solving. From
+                        defending iconic characters to solving fandom-inspired
+                        mysteries, each round encourages humour, critical thinking,
+                        and multimedia expression, perfect for science lovers and
+                        pop culture fans alike.</p>
+                    <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="category-name">DIAGNOSIS DILEMMA</h3>
+                    <p class="category-description">This medical-themed event immerses participants in high-
+                        stakes scenarios, from emergency diagnoses to courtroom
+                        trials and bioinformatics crises. Teams take on the roles of
+                        doctors, legal experts, and public health professionals,
+                        interpreting medical data, building legal cases, and
+                        responding to life-threatening health emergencies. In this
+                        fast-paced, interdisciplinary challenge, participants combine
+                        problem-solving with real-world medical roleplay to navigate
+                        complex situations and save lives.</p>
+                    <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="category-name">PIXEL SPECTRUM</h3>
+                    <p class="category-description">This medical-themed event immerses participants in high-
+                        Pixel Spectrum is PsiFi’s creative tech-arts event, blending
+                        photography, storytelling, and basic programming.
+                        Participants create digital art, short films, and simple games
+                        (often inspired by life at LUMS) where creativity meets code
+                        in fun, hands-on challenges.</p>
+                    <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="category-name">OPPENHEIMER’S ODYSSEY</h3>
+                    <p class="category-description">Oppenheimer’s Odyssey is PsiFi’s flagship physics event,
+                        blending theoretical problem-solving, hands-on experiments,
+                        and debate. Participants tackle Olympiad-style questions,
+                        explore real-world applications, and defend scientific ideas,
+                        making for a rigorous yet engaging deep dive into the world of
+                        physics.</p>
+                    <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="category-name">MATH GAUGE</h3>
+                    <p class="category-description">Math Gauge is a fast-paced, interactive math event that
+                        blends logic, speed, and creativity. From mental math
+                        challenges and escape rooms to rounds like Math Bingo and
+                        Dart Formula, participants will solve puzzles, hit targets, and
+                        think on their feet. It’s a celebration of mathematics where
+                        numbers come alive through engaging, hands-on competition.</p>
+                    <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="category-name">TECHWARS</h3>
+                    <p class="category-description">Techwars reimagines computer science challenges through
+                        fast-paced debugging sprints, hardware-based scavenger
+                        hunts, and hands-on game development. Featuring real tools
+                        like the Godot engine and devices like Cardys, the event
+                        blends coding, creativity, and problem-solving in dynamic,
+                        tech-driven rounds designed to push participants beyond
+                        the screen.</p>
+                    <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="category-name">ROBOWARS</h3>
+                    <p class="category-description">Robowars is a robotics competition where engineering,
+                        strategy, and creativity collide. This year, participants will
+                        design line-following robots to navigate complex mazes,
+                        shifting focus from Arduino boats to autonomous navigation.
+                        From circuitry to code, Robowars challenges teams to bring
+                        ideas to life in a fast-paced, tech-driven arena.</p>
+                    <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="/media/auto.pdf" class="category-button fade-in" target="_blank" rel="noopener">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="category-name">THE LAZARUS MISSIONS</h3>
+                    <p class="category-description">PsiFi’s astrophysics category that brings space science
+                        down to Earth. From observing celestial bodies to decoding
+                        the mechanics of the universe, this category is a journey
+                        through time, light, and gravity. Participants will explore
+                        astrophysical phenomena, engage in hands-on activities,
+                        and tackle challenges rooted in real astronomical
+                        observations and theory.</p>
                     <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
             </div>
