@@ -1,3 +1,4 @@
+from .models import FormState
 from django.shortcuts import render, get_object_or_404
 from users.models import SymposiumRegistration
 from .forms import NamePasswordResetForm  # Adjust path as needed
@@ -28,6 +29,17 @@ from django import forms
 from .models import CampusAmbassador, calculate_nights
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
+from django.views.decorators.http import require_POST
+import os
+import requests
+from datetime import datetime
+
+try:
+    import gspread
+    from google.oauth2.service_account import Credentials
+except Exception:
+    gspread = None
+    Credentials = None
 
 
 def home_view(request):
@@ -467,3 +479,359 @@ def name_password_reset(request):
     else:
         form = NamePasswordResetForm()
     return render(request, 'name_password_reset.html', {'form': form})
+
+
+# Form State Management Views
+
+
+@login_required
+@csrf_exempt
+def save_form_state(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            form_state, created = FormState.objects.get_or_create(
+                user=request.user,
+                form_name='psifi_registration',
+                defaults={'form_data': data}
+            )
+            if not created:
+                form_state.form_data = data
+                form_state.save()
+
+            return JsonResponse({'success': True, 'message': 'Form state saved'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@login_required
+def load_form_state(request):
+    try:
+        form_state = FormState.objects.get(
+            user=request.user,
+            form_name='psifi_registration'
+        )
+        response_data = {
+            'success': True,
+            'data': form_state.form_data,
+            'last_updated': form_state.last_updated.isoformat()
+        }
+
+        # If we have a Cognito save URL, include it
+        if form_state.cognito_save_url:
+            response_data['cognito_save_url'] = form_state.cognito_save_url
+
+        return JsonResponse(response_data)
+    except FormState.DoesNotExist:
+        return JsonResponse({'success': True, 'data': {}})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@login_required
+@csrf_exempt
+def save_cognito_url(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            save_url = data.get('save_url')
+
+            if not save_url:
+                return JsonResponse({'success': False, 'error': 'No save URL provided'})
+
+            form_state, created = FormState.objects.get_or_create(
+                user=request.user,
+                form_name='psifi_registration',
+                defaults={'cognito_save_url': save_url}
+            )
+
+            if not created:
+                form_state.cognito_save_url = save_url
+                form_state.save()
+
+            return JsonResponse({'success': True, 'message': 'Cognito save URL stored'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+# ---- Paymo PG Integration ----
+
+
+def _append_payment_to_sheet(row_values):
+    """Append a row to Google Sheets if gspread is available."""
+    if gspread is None or Credentials is None:
+        return False
+
+    # Prefer env var; fallback to provided sheet ID
+    spreadsheet_id = os.environ.get(
+        'GOOGLE_SHEETS_ID',
+        '1HwxsjxTXYtwkHEmEHuLL9WKI8dsUSWTJqGb55MJfzFk'
+    )
+    service_account_file = os.environ.get(
+        'GOOGLE_APPLICATION_CREDENTIALS',
+        os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'cognitointegration-474313-0b8da5023027.json'))
+    )
+
+    scopes = [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/drive'
+    ]
+
+    print('[Sheets] Using service account file:', service_account_file)
+    print('[Sheets] Spreadsheet ID:', spreadsheet_id)
+    creds = Credentials.from_service_account_file(service_account_file, scopes=scopes)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(spreadsheet_id).sheet1
+    print('[Sheets] Appending row:', row_values)
+    sheet.append_row(row_values, value_input_option='USER_ENTERED')
+    print('[Sheets] Append successful')
+    return True
+
+
+def _extract_amount_from_entry(entry):
+    """Safely extract total amount from Cognito entry payload without regex."""
+    if not entry:
+        return None
+
+    # Prioritize TotalFee field from Cognito form
+    for key in ['TotalFee']:
+        if key in entry:
+            try:
+                val = entry[key]
+                if isinstance(val, (int, float)):
+                    print('[Amount] Found numeric at key', key, ':', val)
+                    return int(val)
+                # If it is a string number (no regex): use simple cast after stripping commas
+                if isinstance(val, str):
+                    cleaned = ''.join([c for c in val if c.isdigit()])
+                    print('[Amount] Found string at key', key, 'raw=', val, 'cleaned=', cleaned)
+                    return int(cleaned) if cleaned else None
+            except Exception:
+                pass
+
+    # Fallback to other common patterns
+    for key in ['total', 'Total', 'grand_total', 'GrandTotal', 'Grand_Total']:
+        if key in entry:
+            try:
+                val = entry[key]
+                if isinstance(val, (int, float)):
+                    print('[Amount] Found numeric at key', key, ':', val)
+                    return int(val)
+                # If it is a string number (no regex): use simple cast after stripping commas
+                if isinstance(val, str):
+                    cleaned = ''.join([c for c in val if c.isdigit()])
+                    print('[Amount] Found string at key', key, 'raw=', val, 'cleaned=', cleaned)
+                    return int(cleaned) if cleaned else None
+            except Exception:
+                pass
+
+    # Sometimes totals live in a nested object like calculations or summary
+    for key in ['calculations', 'summary']:
+        nested = entry.get(key)
+        if isinstance(nested, dict):
+            amount = _extract_amount_from_entry(nested)
+            if amount is not None:
+                return amount
+
+    return None
+
+
+@csrf_exempt
+@require_POST
+def create_payment(request):
+    """Create a Paymo transaction from Cognito afterSubmit payload and return redirect URL."""
+    try:
+        body = json.loads(request.body or '{}')
+    except Exception:
+        return JsonResponse({'detail': 'Invalid JSON'}, status=400)
+
+    # Cognito message structures vary; support a few keys
+    entry = body.get('entry') or body.get('data') or body.get('payload') or body
+    print('[CreatePayment] Incoming body keys:', list(body.keys()))
+    print('[CreatePayment] Entry keys:', list(entry.keys()) if isinstance(entry, dict) else type(entry))
+    print('[CreatePayment] Entry TotalFee value:', entry.get('TotalFee') if isinstance(entry, dict) else 'N/A')
+
+    # Support multiple casings/keys from Cognito entry
+    email = (
+        entry.get('email') or entry.get('Email') or body.get('email') or body.get('Email')
+    )
+    team_name = (
+        entry.get('team_name') or entry.get('teamName') or entry.get('TeamName') or body.get('team_name') or body.get('TeamName')
+    )
+
+    # Prefer total from entry, fallback to server-side computed registration total
+    amount = _extract_amount_from_entry(entry)
+    print('[CreatePayment] Amount extracted:', amount)
+    if (amount is None or amount <= 0) and isinstance(body, dict):
+        try:
+            alt = body.get('amount')
+            print('[CreatePayment] body.amount raw:', alt, type(alt))
+            if isinstance(alt, (int, float)):
+                amount = int(alt)
+                print('[CreatePayment] Using amount from body.amount (numeric):', amount)
+            elif isinstance(alt, str):
+                cleaned = ''.join([c for c in alt if c.isdigit()])
+                if cleaned:
+                    amount = int(cleaned)
+                    print('[CreatePayment] Using amount from body.amount (string cleaned):', amount)
+        except Exception:
+            pass
+
+    # Find an existing registration by email+team_name if possible
+    reg = None
+    if email and team_name:
+        reg = SymposiumRegistration.objects.filter(email__iexact=email, team_name__iexact=team_name).first()
+    elif email:
+        reg = SymposiumRegistration.objects.filter(email__iexact=email).order_by('-submitted_at').first()
+
+    if reg and (amount is None or amount <= 0):
+        # Ensure fees are up to date
+        print('[CreatePayment] Falling back to registration total for', email, team_name)
+        reg.update_fees(save=True)
+        amount = reg.total_fee or 0
+        print('[CreatePayment] Registration total:', amount)
+
+    if not isinstance(amount, int) or amount <= 0:
+        return JsonResponse({'detail': 'Missing or invalid amount'}, status=400)
+
+    paymo_base = os.environ.get('PAYMO_BASE_URL', 'https://dev-dot-cardpay-1.el.r.appspot.com')
+    paymo_api_key = os.environ.get('PAYMO_API_KEY')
+    paymo_api_secret = os.environ.get('PAYMO_API_SECRET')
+
+    if not paymo_api_key or not paymo_api_secret:
+        print('[CreatePayment] Missing Paymo credentials in environment')
+        return JsonResponse({'detail': 'Server misconfigured: missing Paymo credentials'}, status=500)
+
+    # Callback URL where Paymo will POST completion status
+    callback_url = request.build_absolute_uri('/api/paymo/callback/')
+
+    try:
+        print('[CreatePayment] Calling Paymo at', f"{paymo_base}/api/v1/paymo-pg/create-transaction")
+        resp = requests.post(
+            f"{paymo_base}/api/v1/paymo-pg/create-transaction",
+            headers={
+                'Content-Type': 'application/json',
+                'X-API-Key': paymo_api_key,
+                'X-API-Secret': paymo_api_secret,
+            },
+            json={
+                'amount': amount,
+                'checkout_url': callback_url,
+            },
+            timeout=20,
+        )
+        print('[CreatePayment] Paymo response status:', resp.status_code)
+        if resp.status_code >= 400:
+            print('[CreatePayment] Paymo error body:', resp.text)
+            return JsonResponse({'detail': 'Paymo error', 'status': resp.status_code, 'body': resp.text}, status=502)
+        data = resp.json()
+        print('[CreatePayment] Paymo response JSON:', data)
+        # Try multiple shapes: flat, nested under 'data', alternative keys
+        redirect_url = (
+            data.get('redirect_url') or
+            data.get('redirect') or
+            data.get('redirectUrl') or
+            data.get('payment_url') or
+            (data.get('data', {}) if isinstance(data.get('data'), dict) else {}).get('redirect_url') or
+            (data.get('data', {}) if isinstance(data.get('data'), dict) else {}).get('redirect') or
+            (data.get('data', {}) if isinstance(data.get('data'), dict) else {}).get('redirectUrl')
+        )
+        if not redirect_url:
+            print('[CreatePayment] Missing redirect_url in Paymo response')
+            return JsonResponse({'detail': 'Missing redirect_url from Paymo', 'gateway_raw': data}, status=502)
+
+        # Save payment URL to DB for later display
+        if reg:
+            reg.payment_voucher = redirect_url
+            reg.save(update_fields=['payment_voucher'])
+            print('[CreatePayment] Saved payment_voucher for registration id:', reg.id)
+
+        # Append to Google Sheets (best-effort)
+        try:
+            timestamp = datetime.utcnow().isoformat()
+            row = [
+                email or '',
+                team_name or '',
+                str(amount),
+                redirect_url,
+                timestamp,
+            ]
+            _append_payment_to_sheet(row)
+        except Exception:
+            import traceback
+            print('[Sheets] Append failed')
+            traceback.print_exc()
+
+        return JsonResponse({'payment_url': redirect_url})
+    except requests.RequestException as e:
+        print('[CreatePayment] Network error to Paymo:', str(e))
+        return JsonResponse({'detail': 'Network error to Paymo', 'error': str(e)}, status=502)
+
+
+@csrf_exempt
+@require_POST
+def paymo_callback(request):
+    """Receive Paymo checkout callback with transaction status and update registration."""
+    try:
+        payload = json.loads(request.body or '{}')
+    except Exception:
+        payload = {}
+
+    # Expected fields are not specified; try common ones
+    status_value = payload.get('status') or payload.get('payment_status')
+    email = payload.get('email')
+    team_name = payload.get('team_name') or payload.get('teamName')
+    redirect_url = payload.get('redirect_url')
+
+    reg = None
+    if email and team_name:
+        reg = SymposiumRegistration.objects.filter(email__iexact=email, team_name__iexact=team_name).first()
+    elif email:
+        reg = SymposiumRegistration.objects.filter(email__iexact=email).order_by('-submitted_at').first()
+
+    if reg:
+        if status_value and str(status_value).lower() in ['paid', 'success', 'completed']:
+            reg.payment_status = 'Paid'
+            reg.payment_done = True
+            reg.assign_team_id_if_needed(save=False)
+        elif status_value and str(status_value).lower() in ['failed', 'error', 'declined']:
+            reg.payment_status = 'Failed'
+        if redirect_url:
+            reg.payment_voucher = redirect_url
+        reg.save()
+
+    return JsonResponse({'ok': True})
+
+
+# ---- Debug utilities ----
+
+
+@csrf_exempt
+@require_POST
+def debug_sheets_append(request):
+    """Append a test row to Google Sheets to verify credentials and sharing."""
+    try:
+        body = json.loads(request.body or '{}')
+    except Exception:
+        return JsonResponse({'detail': 'Invalid JSON'}, status=400)
+
+    email = body.get('email') or ''
+    team_name = body.get('team_name') or ''
+    amount = body.get('amount') or ''
+    payment_url = body.get('payment_url') or 'https://example.com/test'
+    timestamp = datetime.utcnow().isoformat()
+
+    row = [str(email), str(team_name), str(amount), str(payment_url), timestamp]
+    try:
+        print('[Sheets][Debug] Attempting append of row:', row)
+        ok = _append_payment_to_sheet(row)
+        return JsonResponse({'ok': bool(ok), 'row': row})
+    except Exception as e:
+        import traceback
+        print('[Sheets][Debug] Append failed:', str(e))
+        traceback.print_exc()
+        return JsonResponse({'ok': False, 'error': str(e)}, status=500)

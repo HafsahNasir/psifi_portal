@@ -45,8 +45,17 @@ urlpatterns = [
          name='name_password_reset'),
     path('schedule/', views.schedule_view, name='schedule'),
 
+    # Form State Management URLs
+    path('save-form-state/', views.save_form_state, name='save_form_state'),
+    path('load-form-state/', views.load_form_state, name='load_form_state'),
+    path('save-cognito-url/', views.save_cognito_url, name='save_cognito_url'),
 
+    # Paymo endpoints
+    path('api/create-payment/', views.create_payment, name='create_payment'),
+    path('api/paymo/callback/', views.paymo_callback, name='paymo_callback'),
 
+    # Sheets debug endpoint (temporary)
+    path('api/debug/sheets-append/', views.debug_sheets_append, name='debug_sheets_append'),
 
 ]
 if settings.DEBUG:
