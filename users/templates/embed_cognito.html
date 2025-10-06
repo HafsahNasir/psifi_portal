@@ -348,6 +348,56 @@
         display: none !important;
       }
 
+      /* Comprehensive Cognito Form Styling using CSS Variables and ID targeting */
+      #psifi-form .cog-cognito {
+        --form__background-color: transparent !important;
+        --input__background-color: rgba(26, 32, 46, 0.8) !important;
+        --input__text-color: white !important;
+        --button-primary__background-color: #6366f1 !important;
+        --button-primary__text-color: white !important;
+        --text-color: white !important;
+        --label-color: white !important;
+        --field-label-color: white !important;
+      }
+      
+      /* Universal text selector - ensures ALL text elements are white */
+      #psifi-form .cog-cognito * {
+        color: white !important;
+      }
+      
+      #psifi-form .cog-cognito .cog-section {
+        background: transparent !important;
+        color: white !important;
+      }
+      
+      #psifi-form .cog-cognito .cog-field input,
+      #psifi-form .cog-cognito .cog-field select,
+      #psifi-form .cog-cognito .cog-field textarea {
+        background: rgba(26, 32, 46, 0.8) !important;
+        border: 1px solid rgba(99, 102, 241, 0.5) !important;
+        color: white !important;
+      }
+      
+      #psifi-form .cog-cognito .cog-field label,
+      #psifi-form .cog-cognito label,
+      #psifi-form .cog-cognito p,
+      #psifi-form .cog-cognito span,
+      #psifi-form .cog-cognito div,
+      #psifi-form .cog-cognito h1,
+      #psifi-form .cog-cognito h2,
+      #psifi-form .cog-cognito h3,
+      #psifi-form .cog-cognito h4,
+      #psifi-form .cog-cognito h5,
+      #psifi-form .cog-cognito h6 {
+        color: white !important;
+      }
+      
+      /* Placeholder text styling */
+      #psifi-form .cog-cognito input::placeholder,
+      #psifi-form .cog-cognito textarea::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+      }
+
       .header{
         position: relative;
         display: flex;
@@ -542,7 +592,7 @@
       <img src="../../static/images/logo_psifi.png" alt="" style="max-width: 100px; z-index: 20; position: relative;">
       <a href="/dashboard/" class="dashboard-btn">Dashboard</a>
     </div>
-    <div class="form-container">
+    <div id="psifi-form" class="form-container">
       <script src="https://www.cognitoforms.com/f/seamless.js" data-key="B1EGXzUdukiPlRx54XWcPQ" data-form="1" data-style="chameleon"></script>
     </div>
   </body>
