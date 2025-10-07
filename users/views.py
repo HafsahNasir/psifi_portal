@@ -1,4 +1,3 @@
-from .models import FormState
 from django.shortcuts import render, get_object_or_404
 from users.models import SymposiumRegistration
 from .forms import NamePasswordResetForm  # Adjust path as needed
@@ -481,83 +480,6 @@ def name_password_reset(request):
     return render(request, 'name_password_reset.html', {'form': form})
 
 
-# Form State Management Views
-
-
-@login_required
-@csrf_exempt
-def save_form_state(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            form_state, created = FormState.objects.get_or_create(
-                user=request.user,
-                form_name='psifi_registration',
-                defaults={'form_data': data}
-            )
-            if not created:
-                form_state.form_data = data
-                form_state.save()
-
-            return JsonResponse({'success': True, 'message': 'Form state saved'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
-
-
-@login_required
-def load_form_state(request):
-    try:
-        form_state = FormState.objects.get(
-            user=request.user,
-            form_name='psifi_registration'
-        )
-        response_data = {
-            'success': True,
-            'data': form_state.form_data,
-            'last_updated': form_state.last_updated.isoformat()
-        }
-
-        # If we have a Cognito save URL, include it
-        if form_state.cognito_save_url:
-            response_data['cognito_save_url'] = form_state.cognito_save_url
-
-        return JsonResponse(response_data)
-    except FormState.DoesNotExist:
-        return JsonResponse({'success': True, 'data': {}})
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
-
-
-@login_required
-@csrf_exempt
-def save_cognito_url(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            save_url = data.get('save_url')
-
-            if not save_url:
-                return JsonResponse({'success': False, 'error': 'No save URL provided'})
-
-            form_state, created = FormState.objects.get_or_create(
-                user=request.user,
-                form_name='psifi_registration',
-                defaults={'cognito_save_url': save_url}
-            )
-
-            if not created:
-                form_state.cognito_save_url = save_url
-                form_state.save()
-
-            return JsonResponse({'success': True, 'message': 'Cognito save URL stored'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
-
-
 # ---- Paymo PG Integration ----
 
 
@@ -573,7 +495,8 @@ def _append_payment_to_sheet(row_values):
     )
     service_account_file = os.environ.get(
         'GOOGLE_APPLICATION_CREDENTIALS',
-        os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'cognitointegration-474313-0b8da5023027.json'))
+        os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(
+            __file__)), 'cognitointegration-474313-0b8da5023027.json'))
     )
 
     scopes = [
@@ -583,7 +506,8 @@ def _append_payment_to_sheet(row_values):
 
     print('[Sheets] Using service account file:', service_account_file)
     print('[Sheets] Spreadsheet ID:', spreadsheet_id)
-    creds = Credentials.from_service_account_file(service_account_file, scopes=scopes)
+    creds = Credentials.from_service_account_file(
+        service_account_file, scopes=scopes)
     client = gspread.authorize(creds)
     sheet = client.open_by_key(spreadsheet_id).sheet1
     print('[Sheets] Appending row:', row_values)
@@ -608,7 +532,8 @@ def _extract_amount_from_entry(entry):
                 # If it is a string number (no regex): use simple cast after stripping commas
                 if isinstance(val, str):
                     cleaned = ''.join([c for c in val if c.isdigit()])
-                    print('[Amount] Found string at key', key, 'raw=', val, 'cleaned=', cleaned)
+                    print('[Amount] Found string at key', key,
+                          'raw=', val, 'cleaned=', cleaned)
                     return int(cleaned) if cleaned else None
             except Exception:
                 pass
@@ -624,7 +549,8 @@ def _extract_amount_from_entry(entry):
                 # If it is a string number (no regex): use simple cast after stripping commas
                 if isinstance(val, str):
                     cleaned = ''.join([c for c in val if c.isdigit()])
-                    print('[Amount] Found string at key', key, 'raw=', val, 'cleaned=', cleaned)
+                    print('[Amount] Found string at key', key,
+                          'raw=', val, 'cleaned=', cleaned)
                     return int(cleaned) if cleaned else None
             except Exception:
                 pass
@@ -640,6 +566,205 @@ def _extract_amount_from_entry(entry):
     return None
 
 
+def _calculate_total_from_entry(entry):
+    """Compute total fee using form fields (Early Bird cutoff: Nov 20 current year).
+
+    Pricing model (per person):
+      - Early Bird: 2 Events = 7500, 3 Events = 8500
+      - Regular:    2 Events = 8500, 3 Events = 9500
+
+    Delegation fee:
+      - Early Bird: 0 (waived)
+      - Regular:    3500 (flat per team)
+
+    Accommodation fee:
+      - 1500 per night per delegate opting for accommodation (derived from Nights fields)
+    """
+    try:
+        if not isinstance(entry, dict):
+            return None, {}
+
+        def to_int(val, default=0):
+            if val is None:
+                return default
+            if isinstance(val, (int, float)):
+                try:
+                    return int(val)
+                except Exception:
+                    return default
+            if isinstance(val, str):
+                digits = "".join([c for c in val if c.isdigit()])
+                return int(digits) if digits else default
+            return default
+
+        def get(obj, path):
+            try:
+                cur = obj
+                for p in path.split('.'):
+                    if isinstance(cur, dict) and p in cur:
+                        cur = cur[p]
+                    else:
+                        return None
+                return cur
+            except Exception:
+                return None
+
+        # Normalize keys helper: build a lookup from simplified key -> original key
+        def normalize_key(key: str) -> str:
+            return ''.join(ch.lower() for ch in str(key) if ch.isalnum())
+
+        def find_value_by_substrings(obj: dict, *needles: str):
+            if not isinstance(obj, dict):
+                return None
+            norm_map = {normalize_key(k): k for k in obj.keys()}
+            needles_norm = [normalize_key(n) for n in needles]
+            for nk, orig in norm_map.items():
+                if all(n in nk for n in needles_norm):
+                    return obj.get(orig)
+            return None
+
+        # Determine submission time to classify phase
+        submitted_raw = (
+            get(entry, 'Entry.DateSubmitted') or entry.get('DateSubmitted') or entry.get('Submitted') or
+            find_value_by_substrings(entry, 'date', 'submitted')
+        )
+        submitted_dt = None
+        if isinstance(submitted_raw, str):
+            try:
+                submitted_dt = datetime.fromisoformat(
+                    submitted_raw.replace('Z', '+00:00'))
+            except Exception:
+                try:
+                    submitted_dt = datetime.strptime(
+                        submitted_raw, '%Y-%m-%d %H:%M:%S')
+                except Exception:
+                    submitted_dt = None
+
+        # Import datetime here to avoid local variable issue
+        from datetime import datetime
+        now = datetime.utcnow()
+        cutoff = datetime(year=now.year, month=11, day=20,
+                          hour=23, minute=59, second=59)
+        # If submission date missing, assume now (so EB applies before cutoff)
+        if submitted_dt is None:
+            submitted_dt = now
+        is_early_bird = bool(submitted_dt and submitted_dt <= cutoff)
+
+        # Team size - count non-empty team member fields
+        team_count = 0
+        team_fields = ['Email', 'Email2', 'Email3', 'Email4']
+        print('[DEBUG] Checking team fields:')
+        for field in team_fields:
+            val = entry.get(field)
+            print(f'  {field}: {repr(val)}')
+            if entry.get(field) and str(entry.get(field)).strip():
+                team_count += 1
+        print(f'[DEBUG] team_count: {team_count}')
+
+        # Events selection - look for event choice fields
+        print('[DEBUG] Checking event fields:')
+        print(f'  Choice: {repr(entry.get("Choice"))}')
+        print(f'  DracosSpine: {repr(entry.get("DracosSpine"))}')
+        print(f'  HydrasLair: {repr(entry.get("HydrasLair"))}')
+        print(f'  LadonsNest: {repr(entry.get("LadonsNest"))}')
+
+        # Count selected events - check if each event field is present and truthy
+        num_events = 0
+        if entry.get('DracosSpine'):
+            num_events += 1
+            print('[DEBUG] DracosSpine selected')
+        if entry.get('HydrasLair'):
+            num_events += 1
+            print('[DEBUG] HydrasLair selected')
+        if entry.get('LadonsNest'):
+            num_events += 1
+            print('[DEBUG] LadonsNest selected')
+
+        # If Choice field is used instead
+        if num_events == 0:
+            events_choice_raw = entry.get('Choice') or ''
+            events_choice = str(events_choice_raw).lower()
+            if 'dracos' in events_choice or 'spine' in events_choice:
+                num_events += 1
+            if 'hydras' in events_choice or 'lair' in events_choice:
+                num_events += 1
+            if 'ladons' in events_choice or 'nest' in events_choice:
+                num_events += 1
+
+        print(f'[DEBUG] num_events: {num_events}')
+
+        # Per-person event price
+        if is_early_bird:
+            per_person = 7500 if num_events == 2 else 8500 if num_events == 3 else 0
+        else:
+            per_person = 8500 if num_events == 2 else 9500 if num_events == 3 else 0
+
+        events_price = per_person * team_count
+
+        # Calculate nights from arrival/departure dates
+        total_nights = 0
+        print('[DEBUG] Checking accommodation dates:')
+        try:
+            arrival_fields = ['DateOfArrival',
+                              'DateOfArrival2', 'DateOfArrival3']
+            departure_fields = ['DateOfDeparture',
+                                'DateOfDeparture2', 'DateOfDeparture3']
+
+            for i, arrival_field in enumerate(arrival_fields):
+                arrival = entry.get(arrival_field)
+                departure = entry.get(
+                    departure_fields[i] if i < len(departure_fields) else '')
+                print(
+                    f'  {arrival_field}: {repr(arrival)}, {departure_fields[i]}: {repr(departure)}')
+
+                if arrival and departure:
+                    try:
+                        from datetime import datetime
+                        arr_dt = datetime.strptime(
+                            str(arrival), '%Y-%m-%d').date()
+                        dep_dt = datetime.strptime(
+                            str(departure), '%Y-%m-%d').date()
+                        nights = (dep_dt - arr_dt).days
+                        total_nights += max(1, nights)  # At least 1 night
+                        print(f'    -> {nights} nights')
+                    except Exception as e:
+                        print(f'    -> Error parsing dates: {e}')
+                        total_nights += 1  # Default to 1 night if parsing fails
+        except Exception as e:
+            print(f'[DEBUG] Accommodation error: {e}')
+            pass
+        print(f'[DEBUG] total_nights: {total_nights}')
+
+        per_night = 1500
+        accommodation_fee = total_nights * per_night
+
+        # Delegation fee is flat 3500 (per team)
+        delegation_fee = 3500 if is_early_bird else 4000
+
+        total = events_price + accommodation_fee + delegation_fee
+
+        debug = {
+            # 1=EB, 2=Regular (numeric as requested)
+            'phase': 1 if is_early_bird else 2,
+            'per_person': per_person,
+            'team_count': team_count,
+            'num_events': num_events,
+            'events_price': events_price,
+            'total_nights': total_nights,
+            'per_night': per_night,
+            'accommodation_fee': accommodation_fee,
+            'delegation_fee': delegation_fee,
+            'total': total,
+        }
+
+        return total, debug
+    except Exception as e:
+        print(f'[DEBUG] Exception in _calculate_total_from_entry: {e}')
+        import traceback
+        traceback.print_exc()
+        return None, {}
+
+
 @csrf_exempt
 @require_POST
 def create_payment(request):
@@ -650,55 +775,112 @@ def create_payment(request):
         return JsonResponse({'detail': 'Invalid JSON'}, status=400)
 
     # Cognito message structures vary; support a few keys
-    entry = body.get('entry') or body.get('data') or body.get('payload') or body
-    print('[CreatePayment] Incoming body keys:', list(body.keys()))
-    print('[CreatePayment] Entry keys:', list(entry.keys()) if isinstance(entry, dict) else type(entry))
-    print('[CreatePayment] Entry TotalFee value:', entry.get('TotalFee') if isinstance(entry, dict) else 'N/A')
+    entry = body.get('entry') or body.get(
+        'data') or body.get('payload') or body
+
+    # DEBUG: Log the full structure to understand what we're receiving
+    print('[DEBUG] Full request body keys:', sorted(list(body.keys())))
+    print('[DEBUG] Entry type:', type(entry))
+    if isinstance(entry, dict):
+        print('[DEBUG] Entry keys (first 20):',
+              sorted(list(entry.keys()))[:20])
+
+    # DON'T extract nested Entry - it only contains metadata, not form field data
+    # The nested Entry only has metadata like ['Action', 'AdminLink', 'DateCreated', etc.]
+    # The actual form field data should be in the original entry object
+    original_entry = entry
+
+    # Look for form fields in the original entry
+    # Check if we have the expected form fields
+    has_form_fields = any(key in original_entry for key in [
+        'Email', 'Email2', 'Email3', 'TeamSize', 'Choice',
+        'DracosSpine', 'HydrasLair', 'LadonsNest'
+    ])
+
+    if not has_form_fields:
+        print('[DEBUG] No form fields found in original entry')
+        # The form data might be in a different structure
+        # Let's check if there's a nested structure with the actual form data
+        for key, value in original_entry.items():
+            if isinstance(value, dict) and len(value) > 5:  # Likely contains form data
+                print(f'[DEBUG] Checking nested object at key "{key}" with keys:', sorted(
+                    list(value.keys()))[:10])
+                # Check if this nested object has form fields
+                if any(field in value for field in ['Email', 'Email2', 'TeamSize', 'Choice']):
+                    print(
+                        f'[DEBUG] Found form fields in nested object at key "{key}"')
+                    entry = value
+                    break
+
+    try:
+        if isinstance(entry, dict):
+            print('[Entry] keys:', sorted(list(entry.keys()))[:50])
+    except Exception:
+        pass
 
     # Support multiple casings/keys from Cognito entry
     email = (
-        entry.get('email') or entry.get('Email') or body.get('email') or body.get('Email')
+        entry.get('email') or entry.get('Email') or body.get(
+            'email') or body.get('Email')
     )
     team_name = (
-        entry.get('team_name') or entry.get('teamName') or entry.get('TeamName') or body.get('team_name') or body.get('TeamName')
+        entry.get('team_name') or entry.get('teamName') or entry.get(
+            'TeamName') or body.get('team_name') or body.get('TeamName')
     )
 
-    # Prefer total from entry, fallback to server-side computed registration total
-    amount = _extract_amount_from_entry(entry)
-    print('[CreatePayment] Amount extracted:', amount)
-    if (amount is None or amount <= 0) and isinstance(body, dict):
-        try:
-            alt = body.get('amount')
-            print('[CreatePayment] body.amount raw:', alt, type(alt))
-            if isinstance(alt, (int, float)):
-                amount = int(alt)
-                print('[CreatePayment] Using amount from body.amount (numeric):', amount)
-            elif isinstance(alt, str):
-                cleaned = ''.join([c for c in alt if c.isdigit()])
-                if cleaned:
-                    amount = int(cleaned)
-                    print('[CreatePayment] Using amount from body.amount (string cleaned):', amount)
-        except Exception:
-            pass
+    print(
+        f'[DEBUG] Extracted email: {repr(email)}, team_name: {repr(team_name)}')
+
+    # Prefer server-side computed total using entry fields; fallback to embedded totals
+    amount, fee_debug = _calculate_total_from_entry(entry)
+
+    # If amount is still 0 or None, try to find it in the entry data
+    if not amount or amount <= 0:
+        print('[DEBUG] No amount calculated, looking for TotalFee in entry')
+        amount = _extract_amount_from_entry(entry)
+        if amount:
+            print(f'[DEBUG] Found amount from entry extraction: {amount}')
+
+    # Always print Fee block
+    try:
+        print('[Fee] phase(1=EB,2=Regular):', fee_debug.get('phase', 0))
+        print('[Fee] per_person:', fee_debug.get('per_person', 0))
+        print('[Fee] team_count:', fee_debug.get('team_count', 0))
+        print('[Fee] num_events:', fee_debug.get('num_events', 0))
+        print('[Fee] events_price:', fee_debug.get('events_price', 0))
+        print('[Fee] total_nights:', fee_debug.get('total_nights', 0))
+        print('[Fee] per_night:', fee_debug.get('per_night', 0))
+        print('[Fee] accommodation_fee:',
+              fee_debug.get('accommodation_fee', 0))
+        print('[Fee] delegation_fee:', fee_debug.get('delegation_fee', 0))
+        print('[Fee] total:', fee_debug.get('total', amount or 0))
+    except Exception:
+        pass
 
     # Find an existing registration by email+team_name if possible
     reg = None
     if email and team_name:
-        reg = SymposiumRegistration.objects.filter(email__iexact=email, team_name__iexact=team_name).first()
+        reg = SymposiumRegistration.objects.filter(
+            email__iexact=email, team_name__iexact=team_name).first()
     elif email:
-        reg = SymposiumRegistration.objects.filter(email__iexact=email).order_by('-submitted_at').first()
+        reg = SymposiumRegistration.objects.filter(
+            email__iexact=email).order_by('-submitted_at').first()
 
     if reg and (amount is None or amount <= 0):
         # Ensure fees are up to date
-        print('[CreatePayment] Falling back to registration total for', email, team_name)
+        print('[CreatePayment] Falling back to registration total for',
+              email, team_name)
         reg.update_fees(save=True)
         amount = reg.total_fee or 0
         print('[CreatePayment] Registration total:', amount)
 
     if not isinstance(amount, int) or amount <= 0:
-        return JsonResponse({'detail': 'Missing or invalid amount'}, status=400)
+        print(
+            f'[CreatePayment] Invalid amount: {amount} (type: {type(amount)})')
+        return JsonResponse({'detail': f'Missing or invalid amount: {amount}', 'debug': fee_debug}, status=400)
 
-    paymo_base = os.environ.get('PAYMO_BASE_URL', 'https://dev-dot-cardpay-1.el.r.appspot.com')
+    paymo_base = os.environ.get(
+        'PAYMO_BASE_URL', 'https://dev-dot-cardpay-1.el.r.appspot.com')
     paymo_api_key = os.environ.get('PAYMO_API_KEY')
     paymo_api_secret = os.environ.get('PAYMO_API_SECRET')
 
@@ -710,7 +892,8 @@ def create_payment(request):
     callback_url = request.build_absolute_uri('/api/paymo/callback/')
 
     try:
-        print('[CreatePayment] Calling Paymo at', f"{paymo_base}/api/v1/paymo-pg/create-transaction")
+        print('[CreatePayment] Calling Paymo at',
+              f"{paymo_base}/api/v1/paymo-pg/create-transaction")
         resp = requests.post(
             f"{paymo_base}/api/v1/paymo-pg/create-transaction",
             headers={
@@ -738,7 +921,8 @@ def create_payment(request):
             data.get('payment_url') or
             (data.get('data', {}) if isinstance(data.get('data'), dict) else {}).get('redirect_url') or
             (data.get('data', {}) if isinstance(data.get('data'), dict) else {}).get('redirect') or
-            (data.get('data', {}) if isinstance(data.get('data'), dict) else {}).get('redirectUrl')
+            (data.get('data', {}) if isinstance(
+                data.get('data'), dict) else {}).get('redirectUrl')
         )
         if not redirect_url:
             print('[CreatePayment] Missing redirect_url in Paymo response')
@@ -789,9 +973,11 @@ def paymo_callback(request):
 
     reg = None
     if email and team_name:
-        reg = SymposiumRegistration.objects.filter(email__iexact=email, team_name__iexact=team_name).first()
+        reg = SymposiumRegistration.objects.filter(
+            email__iexact=email, team_name__iexact=team_name).first()
     elif email:
-        reg = SymposiumRegistration.objects.filter(email__iexact=email).order_by('-submitted_at').first()
+        reg = SymposiumRegistration.objects.filter(
+            email__iexact=email).order_by('-submitted_at').first()
 
     if reg:
         if status_value and str(status_value).lower() in ['paid', 'success', 'completed']:
@@ -825,7 +1011,8 @@ def debug_sheets_append(request):
     payment_url = body.get('payment_url') or 'https://example.com/test'
     timestamp = datetime.utcnow().isoformat()
 
-    row = [str(email), str(team_name), str(amount), str(payment_url), timestamp]
+    row = [str(email), str(team_name), str(
+        amount), str(payment_url), timestamp]
     try:
         print('[Sheets][Debug] Attempting append of row:', row)
         ok = _append_payment_to_sheet(row)

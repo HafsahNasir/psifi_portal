@@ -76,17 +76,17 @@ class SymposiumRegistration(models.Model):
 
     undertaking = models.BooleanField(default=False)
     submitted_at = models.DateTimeField(auto_now_add=True)
-    EARLY_BIRD_CUTOFF = date(2025, 7, 15)
+    # Dynamic Early Bird cutoff: November 20 of current year
     EARLY_BIRD_EVENT_FEE = 4000
     REGULAR_EVENT_FEE = 4500
     REGULAR_DELEGATION_FEE = 3500
     EARLY_BIRD_DELEGATION_FEE = 0
 
     def is_early_bird(self):
-        # Use submission date if available, else default to early bird
-        # Assume you have a `submitted_at` DateTimeField
+        # Early Bird until Nov 20 of the current year, based on submission date
         sub_date = self.submitted_at.date() if self.submitted_at else date.today()
-        return sub_date <= self.EARLY_BIRD_CUTOFF
+        cutoff = date(sub_date.year, 11, 20)
+        return sub_date <= cutoff
 
     def calculate_accommodation_fee(self):
         total = 0

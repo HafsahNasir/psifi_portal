@@ -1,521 +1,602 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Join PsiFi - Create Account{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/signup.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %}Join PsiFi - Create
+Account{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+{% endblock %} {% block content %}
 <style>
-/* Reset and Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.logo {
-  max-width: 100px;
-  height: auto;
-  transition: transform 0.3s ease;
-}
-
-.signup-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg,
-    #000000 0%,
-    #030a06 42%,
-    #082015 70%,
-    #0b3d1f 100%
-  );
-  background-attachment: fixed;
-  position: relative;
-  overflow: hidden;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-}
-/* Animated Background Elements */
-.background-elements {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.floating-orb { filter: blur(64px); opacity: 0.40; }
-
-
-.orb-1 {
-  width: 320px; height: 320px;
-  background: radial-gradient(circle at 30% 30%,
-    rgba(12, 134, 96, 0.45), rgba(4, 30, 18, 0.65));
-}
-.orb-2 {
-  width: 420px; height: 420px;
-  background: radial-gradient(circle at 70% 40%,
-    rgba(24, 160, 80, 0.45), rgba(3, 18, 10, 0.65));
-}
-.orb-3 {
-  width: 360px; height: 360px;
-  background: radial-gradient(circle at 50% 50%,
-    rgba(6, 92, 70, 0.35), rgba(0, 0, 0, 0.70));
-}
-
-/* Floating Particles */
-.particles-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: rgba(255,255,255,0.18); /* white */
-  border-radius: 50%;
-  animation: particleFloat 8s linear infinite;
-  box-shadow: 0 0 8px rgba(255,255,255,0.25); /* soft glow */
-}
-
-.particle:nth-child(odd) { animation-duration: 6s; }
-.particle:nth-child(even){ animation-duration: 10s; }
-
-/* Generate random positions for particles */
-.particle-1 { left: 10%; animation-delay: 0s; }
-.particle-2 { left: 20%; animation-delay: 1s; }
-.particle-3 { left: 30%; animation-delay: 2s; }
-.particle-4 { left: 40%; animation-delay: 3s; }
-.particle-5 { left: 50%; animation-delay: 4s; }
-.particle-6 { left: 60%; animation-delay: 5s; }
-.particle-7 { left: 70%; animation-delay: 6s; }
-.particle-8 { left: 80%; animation-delay: 7s; }
-.particle-9 { left: 90%; animation-delay: 8s; }
-.particle-10 { left: 15%; animation-delay: 9s; }
-.particle-11 { left: 25%; animation-delay: 10s; }
-.particle-12 { left: 35%; animation-delay: 11s; }
-.particle-13 { left: 45%; animation-delay: 12s; }
-.particle-14 { left: 55%; animation-delay: 13s; }
-.particle-15 { left: 65%; animation-delay: 14s; }
-.particle-16 { left: 75%; animation-delay: 15s; }
-.particle-17 { left: 85%; animation-delay: 16s; }
-.particle-18 { left: 95%; animation-delay: 17s; }
-.particle-19 { left: 5%; animation-delay: 18s; }
-.particle-20 { left: 95%; animation-delay: 19s; }
-
-/* Back to Home Link */
-.back-home {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  z-index: 100;
-}
-
-.back-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.back-link:hover {
-  color: white;
-  transform: translateX(-4px);
-}
-
-.back-link i {
-  transition: transform 0.3s ease;
-}
-
-.back-link:hover i {
-  transform: translateX(-2px);
-}
-
-/* Main Container */
-.signup-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  position: relative;
-  z-index: 10;
-}
-
-/* Signup Card */
-.signup-card {
-  width: 100%;
-  max-width: 480px;
-  position: relative;
-}
-
-.card-glow {
-  position: absolute;
-  inset: 0;
-  background: rgba(179, 255, 179, 0.043);
-  border-radius: 24px;
-  filter: blur(20px);
-  z-index: -1;
-}
-
-.card-content {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(24, 78, 18, 0.462);
-  border-radius: 24px;
-  margin: 20px 0px;
-  padding: 40px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 10;
-}
-
-/* Header Section */
-.signup-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.signup-title {
-  font-size: 32px;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 8px;
-}
-
-.signup-subtitle {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
-}
-
-/* Form Styles */
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.form-label i {
-  width: 16px;
-  height: 16px;
-}
-
-.required {
-  color: #ef4444;
-}
-
-.input-wrapper {
-  position: relative;
-}
-
-.form-input {
-  width: 100%;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 0 16px;
-  color: white;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.form-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.form-input:focus {
-  outline: none;
-  outline: none;
-  border-color: #228b22;
-  background: rgba(34, 139, 34, 0.1);
-  box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.2);
-}
-
-.form-input.valid {
-  border-color: #14a341;
-  padding-right: 48px;
-}
-
-.form-input.error {
-  border-color: #ef4444;
-}
-
-/* Name Fields Grid */
-.name-fields {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-/* Input Status Icons */
-.input-status {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: none;
-}
-
-.success-icon {
-  color: #10b981;
-}
-
-.loading-icon {
-  color: rgba(255, 255, 255, 0.6);
-  animation: spin 1s linear infinite;
-}
-
-.form-input.valid + .input-status {
-  display: block;
-}
-
-.form-input.valid + .input-status .success-icon {
-  display: block;
-}
-
-.form-input.valid + .input-status .loading-icon {
-  display: none;
-}
-
-/* Password Toggle */
-.password-toggle {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  padding: 4px;
-  transition: color 0.3s ease;
-}
-
-.password-toggle:hover {
-  color: white;
-}
-
-/* Error Messages */
-.field-errors {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #ef4444;
-  font-size: 14px;
-}
-
-/* Submit Button */
-.register-btn {
-  width: 100%;
-  height: 48px;
-  background: linear-gradient(135deg, #17501C 0%, #003122 100%);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(23,80,28,0.25);
-  position: relative;
-  overflow: hidden;
-  height: 52px !important;
-  border-radius: 999px !important;
-  font-size: 15px !important;
-  font-weight: 700 !important;
-  padding: 0 28px !important;
-}
-
-.register-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 35px rgba(34, 140, 34, 0.4);
-}
-
-.register-btn:active {
-  transform: translateY(0);
-}
-
-.register-btn.loading {
-  pointer-events: none;
-  opacity: 0.8;
-}
-
-.btn-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-arrow {
-  transition: transform 0.3s ease;
-}
-
-.register-btn:hover .btn-arrow {
-  transform: translateX(4px);
-}
-
-.btn-loader {
-  display: none;
-  animation: spin 1s linear infinite;
-}
-
-.register-btn.loading .btn-text,
-.register-btn.loading .btn-arrow {
-  display: none;
-}
-
-.register-btn.loading .btn-loader {
-  display: block;
-}
-
-/* Login Section */
-.login-section {
-  text-align: center;
-  margin-top: 32px;
-}
-
-.login-text {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-}
-
-.login-link {
-  color: rgb(14, 95, 14);
-  text-decoration: none;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.3s ease;
-}
-
-.login-link:hover {
-  color: rgb(19, 230, 19);
-}
-
-.login-link i {
-  transition: transform 0.3s ease;
-}
-
-.login-link:hover i {
-  transform: translateX(2px);
-}
-
-/* Ripple Effect */
-.register-btn {
-  position: relative;
-  overflow: hidden;
-}
-
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(0);
-  animation: ripple-animation 0.6s linear;
-  pointer-events: none;
-}
-
-/* Animations */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
+  /* Reset and Base Styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-  33% {
-    transform: translateY(-20px) rotate(120deg);
-  }
-  66% {
-    transform: translateY(10px) rotate(240deg);
-  }
-}
 
-@keyframes particleFloat {
-  0% {
-    transform: translateY(100vh) rotate(0deg);
-    opacity: 0;
+  .logo {
+    max-width: 100px;
+    height: auto;
+    transition: transform 0.3s ease;
   }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) rotate(360deg);
-    opacity: 0;
-  }
-}
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes ripple-animation {
-  to {
-    transform: scale(4);
-    opacity: 0;
+  .signup-page {
+    min-height: 100vh;
+    background: linear-gradient(
+      135deg,
+      #000000 0%,
+      #030a06 42%,
+      #082015 70%,
+      #0b3d1f 100%
+    );
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   }
-}
+  /* Animated Background Elements */
+  .background-elements {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1;
+  }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+  .floating-orb {
+    filter: blur(64px);
+    opacity: 0.4;
+  }
+
+  .orb-1 {
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(12, 134, 96, 0.45),
+      rgba(4, 30, 18, 0.65)
+    );
+  }
+  .orb-2 {
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(
+      circle at 70% 40%,
+      rgba(24, 160, 80, 0.45),
+      rgba(3, 18, 10, 0.65)
+    );
+  }
+  .orb-3 {
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(6, 92, 70, 0.35),
+      rgba(0, 0, 0, 0.7)
+    );
+  }
+
+  /* Floating Particles */
+  .particles-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.18); /* white */
+    border-radius: 50%;
+    animation: particleFloat 8s linear infinite;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.25); /* soft glow */
+  }
+
+  .particle:nth-child(odd) {
+    animation-duration: 6s;
+  }
+  .particle:nth-child(even) {
+    animation-duration: 10s;
+  }
+
+  /* Generate random positions for particles */
+  .particle-1 {
+    left: 10%;
+    animation-delay: 0s;
+  }
+  .particle-2 {
+    left: 20%;
+    animation-delay: 1s;
+  }
+  .particle-3 {
+    left: 30%;
+    animation-delay: 2s;
+  }
+  .particle-4 {
+    left: 40%;
+    animation-delay: 3s;
+  }
+  .particle-5 {
+    left: 50%;
+    animation-delay: 4s;
+  }
+  .particle-6 {
+    left: 60%;
+    animation-delay: 5s;
+  }
+  .particle-7 {
+    left: 70%;
+    animation-delay: 6s;
+  }
+  .particle-8 {
+    left: 80%;
+    animation-delay: 7s;
+  }
+  .particle-9 {
+    left: 90%;
+    animation-delay: 8s;
+  }
+  .particle-10 {
+    left: 15%;
+    animation-delay: 9s;
+  }
+  .particle-11 {
+    left: 25%;
+    animation-delay: 10s;
+  }
+  .particle-12 {
+    left: 35%;
+    animation-delay: 11s;
+  }
+  .particle-13 {
+    left: 45%;
+    animation-delay: 12s;
+  }
+  .particle-14 {
+    left: 55%;
+    animation-delay: 13s;
+  }
+  .particle-15 {
+    left: 65%;
+    animation-delay: 14s;
+  }
+  .particle-16 {
+    left: 75%;
+    animation-delay: 15s;
+  }
+  .particle-17 {
+    left: 85%;
+    animation-delay: 16s;
+  }
+  .particle-18 {
+    left: 95%;
+    animation-delay: 17s;
+  }
+  .particle-19 {
+    left: 5%;
+    animation-delay: 18s;
+  }
+  .particle-20 {
+    left: 95%;
+    animation-delay: 19s;
+  }
+
+  /* Back to Home Link */
+  .back-home {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 100;
+  }
+
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .back-link:hover {
+    color: white;
+    transform: translateX(-4px);
+  }
+
+  .back-link i {
+    transition: transform 0.3s ease;
+  }
+
+  .back-link:hover i {
+    transform: translateX(-2px);
+  }
+
+  /* Main Container */
+  .signup-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Signup Card */
+  .signup-card {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+  }
+
+  .card-glow {
+    position: absolute;
+    inset: 0;
+    background: rgba(179, 255, 179, 0.043);
+    border-radius: 24px;
+    filter: blur(20px);
+    z-index: -1;
+  }
+
   .card-content {
-    padding: 24px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(24, 78, 18, 0.462);
+    border-radius: 24px;
+    margin: 20px 0px;
+    padding: 40px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
   }
+
+  /* Header Section */
+  .signup-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
   .signup-title {
-    font-size: 28px;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 8px;
   }
-  .name-fields {
-    grid-template-columns: 1fr;
+
+  .signup-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+  }
+
+  /* Form Styles */
+  .signup-form {
+    display: flex;
+    flex-direction: column;
     gap: 24px;
   }
-  .back-home {
-    top: 16px;
-    left: 16px;
-  }
-}
 
-@media (max-width: 480px) {
-  .signup-container {
-    padding: 16px;
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
-  .card-content {
-    padding: 20px;
+
+  .form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 14px;
   }
-  .signup-title {
-    font-size: 24px;
+
+  .form-label i {
+    width: 16px;
+    height: 16px;
   }
-}
+
+  .required {
+    color: #ef4444;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .form-input {
+    width: 100%;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 0 16px;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .form-input:focus {
+    outline: none;
+    outline: none;
+    border-color: #228b22;
+    background: rgba(34, 139, 34, 0.1);
+    box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.2);
+  }
+
+  .form-input.valid {
+    border-color: #14a341;
+    padding-right: 48px;
+  }
+
+  .form-input.error {
+    border-color: #ef4444;
+  }
+
+  /* Name Fields Grid */
+  .name-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Input Status Icons */
+  .input-status {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+  }
+
+  .success-icon {
+    color: #10b981;
+  }
+
+  .loading-icon {
+    color: rgba(255, 255, 255, 0.6);
+    animation: spin 1s linear infinite;
+  }
+
+  .form-input.valid + .input-status {
+    display: block;
+  }
+
+  .form-input.valid + .input-status .success-icon {
+    display: block;
+  }
+
+  .form-input.valid + .input-status .loading-icon {
+    display: none;
+  }
+
+  /* Password Toggle */
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.3s ease;
+  }
+
+  .password-toggle:hover {
+    color: white;
+  }
+
+  /* Error Messages */
+  .field-errors {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ef4444;
+    font-size: 14px;
+  }
+
+  /* Submit Button */
+  .register-btn {
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(135deg, #17501c 0%, #003122 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(23, 80, 28, 0.25);
+    position: relative;
+    overflow: hidden;
+    height: 52px !important;
+    border-radius: 999px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    padding: 0 28px !important;
+  }
+
+  .register-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(34, 140, 34, 0.4);
+  }
+
+  .register-btn:active {
+    transform: translateY(0);
+  }
+
+  .register-btn.loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .register-btn:hover .btn-arrow {
+    transform: translateX(4px);
+  }
+
+  .btn-loader {
+    display: none;
+    animation: spin 1s linear infinite;
+  }
+
+  .register-btn.loading .btn-text,
+  .register-btn.loading .btn-arrow {
+    display: none;
+  }
+
+  .register-btn.loading .btn-loader {
+    display: block;
+  }
+
+  /* Login Section */
+  .login-section {
+    text-align: center;
+    margin-top: 32px;
+  }
+
+  .login-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+  }
+
+  .login-link {
+    color: rgb(14, 95, 14);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+  }
+
+  .login-link:hover {
+    color: rgb(19, 230, 19);
+  }
+
+  .login-link i {
+    transition: transform 0.3s ease;
+  }
+
+  .login-link:hover i {
+    transform: translateX(2px);
+  }
+
+  /* Ripple Effect */
+  .register-btn {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+  }
+
+  /* Animations */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-20px) rotate(120deg);
+    }
+    66% {
+      transform: translateY(10px) rotate(240deg);
+    }
+  }
+
+  @keyframes particleFloat {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes ripple-animation {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .card-content {
+      padding: 24px;
+    }
+    .signup-title {
+      font-size: 28px;
+    }
+    .name-fields {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .back-home {
+      top: 16px;
+      left: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .signup-container {
+      padding: 16px;
+    }
+    .card-content {
+      padding: 20px;
+    }
+    .signup-title {
+      font-size: 24px;
+    }
+  }
 </style>
 
 <div class="signup-page">
@@ -529,7 +610,7 @@
   <!-- Floating Particles -->
   <div class="particles-container">
     {% for i in "12345678901234567890" %}
-      <div class="particle particle-{{ forloop.counter }}"></div>
+    <div class="particle particle-{{ forloop.counter }}"></div>
     {% endfor %}
   </div>
 
@@ -546,16 +627,16 @@
     <div class="signup-card">
       <!-- Card Glow Effect -->
       <div class="card-glow"></div>
-      
+
       <div class="card-content">
         <!-- Header Section -->
         <div class="signup-header">
           <div class="logo-section">
-                <img
+            <img
               src="{% static 'images/logo_psifi.png' %}"
               alt="PsiFi Logo"
               class="logo"
-              /> 
+            />
             <h1 class="signup-title">Join PsiFi</h1>
             <p class="signup-subtitle">Create your account to get started</p>
           </div>
@@ -574,22 +655,24 @@
                 <span class="required">*</span>
               </label>
               <div class="input-wrapper">
-                <input type="text" 
-                       name="username" 
-                       id="id_username" 
-                       class="form-input" 
-                       placeholder="Enter your username"
-                       value="{{ form.username.value|default:'' }}"
-                       required
-                       data-field="username">
+                <input
+                  type="text"
+                  name="username"
+                  id="id_username"
+                  class="form-input"
+                  placeholder="Enter your username"
+                  value="{{ form.username.value|default:'' }}"
+                  required
+                  data-field="username"
+                />
                 <div class="input-status" id="status-id_username">
                   <i class="fas fa-check-circle success-icon"></i>
                   <i class="fas fa-spinner loading-icon"></i>
                 </div>
               </div>
-              <div class="field-errors" id="errors-id_username">
-                {% if form.username.errors %}
-                  {% for error in form.username.errors %}
+              <div class="field-errors" id="errors-id_password1">
+                {% if form.password1.errors %}
+                  {% for error in form.password1.errors %}
                     <span class="error-message">
                       <i class="fas fa-exclamation-circle"></i>
                       {{ error }}
@@ -597,6 +680,7 @@
                   {% endfor %}
                 {% endif %}
               </div>
+              
             </div>
 
             <!-- Email Field -->
@@ -607,28 +691,28 @@
                 <span class="required">*</span>
               </label>
               <div class="input-wrapper">
-                <input type="email" 
-                       name="email" 
-                       id="id_email" 
-                       class="form-input" 
-                       placeholder="Enter your email"
-                       value="{{ form.email.value|default:'' }}"
-                       required
-                       data-field="email">
+                <input
+                  type="email"
+                  name="email"
+                  id="id_email"
+                  class="form-input"
+                  placeholder="Enter your email"
+                  value="{{ form.email.value|default:'' }}"
+                  required
+                  data-field="email"
+                />
                 <div class="input-status" id="status-id_email">
                   <i class="fas fa-check-circle success-icon"></i>
                   <i class="fas fa-spinner loading-icon"></i>
                 </div>
               </div>
               <div class="field-errors" id="errors-id_email">
-                {% if form.email.errors %}
-                  {% for error in form.email.errors %}
-                    <span class="error-message">
-                      <i class="fas fa-exclamation-circle"></i>
-                      {{ error }}
-                    </span>
-                  {% endfor %}
-                {% endif %}
+                {% if form.email.errors %} {% for error in form.email.errors %}
+                <span class="error-message">
+                  <i class="fas fa-exclamation-circle"></i>
+                  {{ error }}
+                </span>
+                {% endfor %} {% endif %}
               </div>
             </div>
 
@@ -640,29 +724,33 @@
                   First Name
                 </label>
                 <div class="input-wrapper">
-                  <input type="text" 
-                         name="first_name" 
-                         id="id_first_name" 
-                         class="form-input" 
-                         placeholder="First name"
-                         value="{{ form.first_name.value|default:'' }}"
-                         data-field="first_name">
+                  <input
+                    type="text"
+                    name="first_name"
+                    id="id_first_name"
+                    class="form-input"
+                    placeholder="First name"
+                    value="{{ form.first_name.value|default:'' }}"
+                    data-field="first_name"
+                  />
                 </div>
               </div>
-              
+
               <div class="form-group">
                 <label for="id_last_name" class="form-label">
                   <i class="fas fa-id-card"></i>
                   Last Name
                 </label>
                 <div class="input-wrapper">
-                  <input type="text" 
-                         name="last_name" 
-                         id="id_last_name" 
-                         class="form-input" 
-                         placeholder="Last name"
-                         value="{{ form.last_name.value|default:'' }}"
-                         data-field="last_name">
+                  <input
+                    type="text"
+                    name="last_name"
+                    id="id_last_name"
+                    class="form-input"
+                    placeholder="Last name"
+                    value="{{ form.last_name.value|default:'' }}"
+                    data-field="last_name"
+                  />
                 </div>
               </div>
             </div>
@@ -675,15 +763,21 @@
                 <span class="required">*</span>
               </label>
               <div class="input-wrapper">
-                <input type="password" 
-                       name="password1" 
-                       id="id_password1" 
-                       class="form-input" 
-                       placeholder="Enter your password"
-                       value="{{ form.password1.value|default:'' }}"
-                       required
-                       data-field="password1">
-                <button type="button" class="password-toggle" onclick="togglePassword('id_password1')">
+                <input
+                  type="password"
+                  name="password1"
+                  id="id_password1"
+                  class="form-input"
+                  placeholder="Enter your password"
+                  value="{{ form.password1.value|default:'' }}"
+                  required
+                  data-field="password1"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  onclick="togglePassword('id_password1')"
+                >
                   <i class="fas fa-eye" id="eye-id_password1"></i>
                 </button>
               </div>
@@ -696,7 +790,7 @@
                     </span>
                   {% endfor %}
                 {% endif %}
-              </div>
+              </div>              
             </div>
 
             <!-- Confirm Password Field -->
@@ -707,40 +801,46 @@
                 <span class="required">*</span>
               </label>
               <div class="input-wrapper">
-                <input type="password" 
-                       name="password2" 
-                       id="id_password2" 
-                       class="form-input" 
-                       placeholder="Confirm your password"
-                       value="{{ form.password2.value|default:'' }}"
-                       required
-                       data-field="password2">
-                <button type="button" class="password-toggle" onclick="togglePassword('id_password2')">
+                <input
+                  type="password"
+                  name="password2"
+                  id="id_password2"
+                  class="form-input"
+                  placeholder="Confirm your password"
+                  value="{{ form.password2.value|default:'' }}"
+                  required
+                  data-field="password2"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  onclick="togglePassword('id_password2')"
+                >
                   <i class="fas fa-eye" id="eye-id_password2"></i>
                 </button>
               </div>
               <div class="field-errors" id="errors-id_password2">
-                {% if form.password2.errors %}
+                {% if form.password2.errors %} 
                   {% for error in form.password2.errors %}
-                    <span class="error-message">
-                      <i class="fas fa-exclamation-circle"></i>
-                      {{ error }}
-                    </span>
-                  {% endfor %}
+                <span class="error-message">
+                  <i class="fas fa-exclamation-circle"></i>
+                  {{ error }}
+                </span>
+                  {% endfor %} 
                 {% endif %}
               </div>
             </div>
 
             <!-- Non-field errors -->
             {% if form.non_field_errors %}
-              <div class="field-errors">
-                {% for error in form.non_field_errors %}
-                  <span class="error-message">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    {{ error }}
-                  </span>
-                {% endfor %}
-              </div>
+            <div class="field-errors">
+              {% for error in form.non_field_errors %}
+              <span class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ error }}
+              </span>
+              {% endfor %}
+            </div>
             {% endif %}
 
             <!-- Submit Button -->
@@ -757,7 +857,7 @@
         <!-- Login Link Section -->
         <div class="login-section">
           <p class="login-text">
-            Already have an account? 
+            Already have an account?
             <a href="{% url 'login' %}" class="login-link">
               Sign in here
               <i class="fas fa-arrow-right"></i>
@@ -770,165 +870,146 @@
 </div>
 
 <script>
-// Password toggle functionality
-function togglePassword(fieldId) {
-  const passwordField = document.getElementById(fieldId);
-  const eyeIcon = document.getElementById('eye-' + fieldId);
-  
-  if (passwordField.type === 'password') {
-    passwordField.type = 'text';
-    eyeIcon.classList.remove('fa-eye');
-    eyeIcon.classList.add('fa-eye-slash');
-  } else {
-    passwordField.type = 'password';
-    eyeIcon.classList.remove('fa-eye-slash');
-    eyeIcon.classList.add('fa-eye');
-  }
-}
+  // Password toggle functionality
+  function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const eyeIcon = document.getElementById("eye-" + fieldId);
 
-// Form validation and enhancement
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('signupForm');
-  const submitBtn = document.getElementById('registerBtn');
-  const inputs = form.querySelectorAll('.form-input');
-
-  // Add input event listeners for real-time validation
-  inputs.forEach(input => {
-    input.addEventListener('input', function() {
-      validateField(this);
-    });
-
-    input.addEventListener('blur', function() {
-      validateField(this);
-    });
-
-    input.addEventListener('focus', function() {
-      clearFieldErrors(this);
-    });
-  });
-
-  // Form submission handling
-  form.addEventListener('submit', (e) => {
-    // Add loading state
-    submitBtn.classList.add('loading');
-
-    // Validate all fields
-    let isValid = true;
-    inputs.forEach(input => {
-      if (!validateField(input)) {
-        isValid = false;
-      }
-    });
-
-    if (!isValid) {
-      e.preventDefault();
-      submitBtn.classList.remove('loading');
-      return false;
-    }
-
-    // If validation passes, form will submit normally
-    // Loading state will be removed when page reloads or redirects
-  });
-
-  function validateField(input) {
-    const value = input.value.trim();
-    const fieldName = input.getAttribute('data-field');
-
-    // Clear previous validation states
-    input.classList.remove('valid', 'error');
-
-    // Basic validation
-    if (input.hasAttribute('required') && !value) {
-      input.classList.add('error');
-      return false;
-    }
-
-    // Email validation
-    if (input.type === 'email' && value) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        input.classList.add('error');
-        return false;
-      }
-    }
-
-    // Password validation
-    if (fieldName === 'password1' && value) {
-      if (value.length < 8) {
-        input.classList.add('error');
-        return false;
-      }
-    }
-
-    // Confirm password validation
-    if (fieldName === 'password2' && value) {
-      const password1 = document.getElementById('id_password1').value;
-      if (value !== password1) {
-        input.classList.add('error');
-        return false;
-      }
-    }
-
-    // If we get here, field is valid
-    if (value) {
-      input.classList.add('valid');
-    }
-
-    return true;
-  }
-
-  function clearFieldErrors(input) {
-    input.classList.remove('error');
-    const errorContainer = document.getElementById('errors-' + input.id);
-    if (errorContainer) {
-      const dynamicErrors = errorContainer.querySelectorAll('.dynamic-error');
-      dynamicErrors.forEach(error => error.remove());
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      eyeIcon.classList.remove("fa-eye");
+      eyeIcon.classList.add("fa-eye-slash");
+    } else {
+      passwordField.type = "password";
+      eyeIcon.classList.remove("fa-eye-slash");
+      eyeIcon.classList.add("fa-eye");
     }
   }
 
-  // Enhanced form interaction
-  inputs.forEach(input => {
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const inputs = Array.from(form.querySelectorAll('.form-input'));
-        const currentIndex = inputs.indexOf(this);
-        const nextInput = inputs[currentIndex + 1];
+  // Form validation and enhancement
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("signupForm");
+    const submitBtn = document.getElementById("registerBtn");
+    const inputs = form.querySelectorAll(".form-input");
 
-        if (nextInput) {
-          nextInput.focus();
-        } else {
-          form.submit();
+    // Add input event listeners for real-time validation
+    inputs.forEach((input) => {
+      input.addEventListener("input", function () {
+        validateField(this);
+      });
+
+      input.addEventListener("blur", function () {
+        validateField(this);
+      });
+
+      input.addEventListener("focus", function () {
+        clearFieldErrors(this);
+      });
+    });
+
+    // Form submission handling (do not block submission; let server validate)
+    form.addEventListener("submit", () => {
+      submitBtn.classList.add("loading");
+      submitBtn.setAttribute("disabled", "disabled");
+    });
+
+    function validateField(input) {
+      const value = input.value.trim();
+      const fieldName = input.getAttribute("data-field");
+
+      // Clear previous validation states
+      input.classList.remove("valid", "error");
+
+      // Basic validation
+      if (input.hasAttribute("required") && !value) {
+        input.classList.add("error");
+        return false;
+      }
+
+      // Email validation
+      if (input.type === "email" && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          input.classList.add("error");
+          return false;
         }
       }
+
+      // Password validation
+      if (fieldName === "password1" && value) {
+        if (value.length < 8) {
+          input.classList.add("error");
+          return false;
+        }
+      }
+
+      // Confirm password validation
+      if (fieldName === "password2" && value) {
+        const password1 = document.getElementById("id_password1").value;
+        if (value !== password1) {
+          input.classList.add("error");
+          return false;
+        }
+      }
+
+      // If we get here, field is valid
+      if (value) {
+        input.classList.add("valid");
+      }
+
+      return true;
+    }
+
+    function clearFieldErrors(input) {
+      input.classList.remove("error");
+      const errorContainer = document.getElementById("errors-" + input.id);
+      if (errorContainer) {
+        const dynamicErrors = errorContainer.querySelectorAll(".dynamic-error");
+        dynamicErrors.forEach((error) => error.remove());
+      }
+    }
+
+    // Enhanced form interaction
+    inputs.forEach((input) => {
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const inputs = Array.from(form.querySelectorAll(".form-input"));
+          const currentIndex = inputs.indexOf(this);
+          const nextInput = inputs[currentIndex + 1];
+
+          if (nextInput) {
+            nextInput.focus();
+          } else {
+            form.submit();
+          }
+        }
+      });
+    });
+
+    // Add ripple effect to button
+    const button = document.getElementById("registerBtn");
+
+    button.addEventListener("click", function (e) {
+      const ripple = document.createElement("span");
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+
+      ripple.style.width = ripple.style.height = size + "px";
+      ripple.style.left = x + "px";
+      ripple.style.top = y + "px";
+      ripple.classList.add("ripple");
+
+      this.appendChild(ripple);
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
     });
   });
-
-  // Add ripple effect to button
-  const button = document.getElementById('registerBtn');
-
-  button.addEventListener('click', function(e) {
-    const ripple = document.createElement('span');
-    const rect = this.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
-
-    ripple.style.width = ripple.style.height = size + 'px';
-    ripple.style.left = x + 'px';
-    ripple.style.top = y + 'px';
-    ripple.classList.add('ripple');
-
-    this.appendChild(ripple);
-
-    setTimeout(() => {
-      ripple.remove();
-    }, 600);
-  });
-});
 </script>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{% static 'js/signup.js' %}"></script>
 {% endblock %}
