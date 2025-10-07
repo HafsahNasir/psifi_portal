@@ -1185,103 +1185,70 @@
         saveTimeout = setTimeout(saveFormState, 2000); // Save 2 seconds after last change
       }
 
-      // Initialize when page loads
       document.addEventListener("DOMContentLoaded", function () {
-        // Load saved form state after a delay to ensure Cognito form is loaded
-        setTimeout(loadFormState, 2000);
+        // Wait for the Cognito iframe to appear
+        const observer = new MutationObserver(() => {
+          const iframe = document.querySelector(
+            'iframe[src*="cognitoforms.com"]'
+          );
+          if (iframe) {
+            // Stop observing once found
+            observer.disconnect();
 
-        // Auto-save every 45 seconds
-        setInterval(() => {
-          if (formLoaded) saveFormState();
-        }, 45000);
+            let lastUrl = iframe.src;
 
-        // Save on form changes (with debouncing) - use capture phase for better coverage
-        document.addEventListener("input", debouncedSave, true);
-        document.addEventListener("change", debouncedSave, true);
-        document.addEventListener("blur", debouncedSave, true);
+            // Observe src changes to catch new resume URLs
+            const checkInterval = setInterval(() => {
+              if (iframe.src !== lastUrl) {
+                lastUrl = iframe.src;
+                console.log("🔗 New Cognito Form URL detected:", lastUrl);
 
-        // Save before page unload
-        window.addEventListener("beforeunload", () => {
-          if (formLoaded) {
-            const formData = getFormData();
-            if (Object.keys(formData).length > 0) {
-              // Use synchronous request for beforeunload
-              navigator.sendBeacon(
-                "/save-form-state/",
-                JSON.stringify(formData)
-              );
-            }
+                // Example: store it in localStorage or send to backend
+                localStorage.setItem("cognitoFormURL", lastUrl);
+                fetch("/api/save-form-url/", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ form_url: lastUrl }),
+                }).catch((e) => console.error("Error saving form URL:", e));
+              }
+            }, 1500);
           }
         });
 
-        // Enhanced save detection - capture Cognito save actions
-        document.addEventListener(
-          "click",
-          function (event) {
-            const target = event.target;
+        observer.observe(document.body, { childList: true, subtree: true });
+      });
+      window.addEventListener("message", (event) => {
+        // Only listen to Cognito Form messages
+        if (!event.origin.includes("cognitoforms.com")) return;
 
-            // Check for various save-related buttons
-            if (
-              target.matches('button[type="submit"], input[type="submit"]') ||
-              target.textContent.toLowerCase().includes("save") ||
-              target.textContent.toLowerCase().includes("next") ||
-              target.textContent.toLowerCase().includes("submit") ||
-              target.classList.contains("cog-button") ||
-              target.closest(".cog-navigation")
-            ) {
-              if (formLoaded) {
-                // Add a small delay to allow Cognito to process the save
-                setTimeout(() => {
-                  captureCognitoSaveLink();
-                }, 1000);
+        // Look for a message that includes an "edit" or "update" URL
+        if (event.data && typeof event.data === "string") {
+          const match = event.data.match(
+            /https:\/\/www\.cognitoforms\.com\/.*/
+          );
+          if (match) {
+            const formEditUrl = match[0];
+            console.log("🧩 Captured Cognito Edit URL:", formEditUrl);
 
-                saveFormState();
-              }
-            }
-          },
-          true
+            // Save it locally so you can restore it when user comes back
+            localStorage.setItem("cognitoEditUrl", formEditUrl);
+          }
+        }
+      });
+
+      window.addEventListener("load", () => {
+        const script = document.querySelector(
+          'script[src*="cognitoforms.com/f/seamless.js"]'
         );
-
-        // Listen for URL changes (Cognito might update the URL with save parameters)
-        let currentUrl = window.location.href;
-        setInterval(() => {
-          if (window.location.href !== currentUrl) {
-            currentUrl = window.location.href;
-            // Check if the new URL contains save parameters
-            if (currentUrl.includes("saved") || currentUrl.includes("resume")) {
-              captureCognitoSaveLink();
-            }
-          }
-        }, 1000);
-
-        // Listen for Cognito-specific events if they exist
-        document.addEventListener("cognito:saved", function (event) {
-          console.log("Cognito save event detected:", event);
-          captureCognitoSaveLink();
-        });
-
-        // Monitor for new save links appearing in the DOM
-        const observer = new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            mutation.addedNodes.forEach(function (node) {
-              if (node.nodeType === 1) {
-                // Element node
-                // Check if the new node contains a save link
-                const saveLink = node.querySelector
-                  ? node.querySelector('a[href*="saved"], a[href*="resume"]')
-                  : null;
-                if (saveLink) {
-                  captureCognitoSaveLink();
-                }
-              }
-            });
-          });
-        });
-
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true,
-        });
+        if (script) {
+          console.log("script", script);
+          const key = script.getAttribute("data-key");
+          const form = script.getAttribute("data-form");
+          const link = `https://www.cognitoforms.com/f/${key}?id=${form}`;
+          console.log("Extracted Cognito Form Link:", link);
+        } else {
+          console.log("No Cognito form script found.");
+        }
       });
     </script>
   </body>
